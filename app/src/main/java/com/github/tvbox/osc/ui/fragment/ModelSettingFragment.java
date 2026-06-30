@@ -33,6 +33,8 @@ import com.github.tvbox.osc.ui.dialog.ResetDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.XWalkInitDialog;
 import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
+import android.content.Intent;
+import com.github.tvbox.osc.ui.activity.CardAdminActivity;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.HistoryHelper;
@@ -141,6 +143,21 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 verifyDialog.show();
             }
         });
+
+        // ── 全能看：卡密管理 ──
+        findViewById(R.id.llCardMgmt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                try {
+                    Intent intent = new Intent(mActivity, CardAdminActivity.class);
+                    mActivity.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(mContext, "卡密管理页面暂不可用", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         tvDebugOpen = findViewById(R.id.tvDebugOpen);
         tvDebugOpen.setText(Hawk.get(HawkConfig.DEBUG_OPEN, false) ? "开启" : "关闭");
         tvApi = findViewById(R.id.tvApi);
