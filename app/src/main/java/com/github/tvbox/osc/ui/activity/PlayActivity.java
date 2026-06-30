@@ -280,8 +280,7 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                Object dialog = null /* DanmuSettingDialog */, mDanmuView);
-                dialog.show();
+                /* DanmuSettingDialog removed */
             }
 
             @Override
