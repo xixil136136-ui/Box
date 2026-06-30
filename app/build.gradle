@@ -28,6 +28,15 @@ android {
         exclude 'META-INF/DEPENDENCIES'
     }
 
+    signingConfigs {
+        release {
+            storeFile file('../keystore.jks')
+            storePassword 'quannengkan'
+            keyAlias 'quannengkan'
+            keyPassword 'quannengkan'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
