@@ -159,8 +159,8 @@ public class PlayActivity extends BaseActivity {
     public static final int BROADCAST_ACTION_NEXT = 2;
 
     ExecutorService executorService;
-    private /* DanmakuView */ Object mDanmuView;
-    private /* DanmakuContext */ Object mDanmakuContext;
+    private View mDanmuView;
+    private Object mDanmakuContext;
     private String danmuText;
 
     @Override
@@ -248,7 +248,7 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                /* DanmuSettingDialog removed */;
+                DanmuSettingDialog dialog = null /* DanmuSettingDialog */(PlayActivity.this, mDanmuView);
                 
             }
 
