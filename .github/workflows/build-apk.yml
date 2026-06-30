@@ -19,14 +19,7 @@ jobs:
             echo "local.properties created"
           fi
       - run: ./gradlew assembleArm64GenericNormalRelease assembleArmeabiGenericNormalRelease --no-daemon -Dorg.gradle.jvmargs=-Xmx2048m
-      - name: Collect APK
-        run: |
-          mkdir -p apk_output/
-          find . -path ./app/build/outputs -name "*.apk" -type f | while read apk; do
-            cp -v "$apk" apk_output/
-          done
-          echo "=== APKs found ==="
-          ls -la apk_output/ || echo "No APKs"
+      - run: mkdir -p apk_output/ && find app/build/outputs -name "*.apk" -type f | while read apk; do cp -v "$apk" apk_output/; done
       - uses: actions/upload-artifact@v4
         with:
           name: 全能看-APK
