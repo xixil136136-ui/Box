@@ -248,8 +248,7 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                DanmuSettingDialog dialog = null /* DanmuSettingDialog */(PlayActivity.this, mDanmuView);
-                
+                DanmuSettingDialog dialog = /* DanmuSettingDialog removed */
             }
 
             @Override
