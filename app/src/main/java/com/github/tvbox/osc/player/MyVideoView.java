@@ -8,15 +8,10 @@ import androidx.annotation.Nullable;
 
 import com.github.tvbox.osc.base.App;
 
-import master.flame.danmaku.controller.DrawHandler;
-import master.flame.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.model.DanmakuTimer;
-import master.flame.danmaku.ui.widget.DanmakuView;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.VideoView;
 
 public class MyVideoView extends VideoView implements DrawHandler.Callback {
-    private DanmakuView danmuView;
 
     public MyVideoView(@NonNull Context context) {
         super(context, null);
@@ -41,66 +36,50 @@ public class MyVideoView extends VideoView implements DrawHandler.Callback {
     @Override
     public void seekTo(long pos) {
         super.seekTo(pos);
-        if (haveDanmu()) danmuView.seekTo(pos);
     }
 
     @Override
     public void resume() {
         super.resume();
-        if (haveDanmu()) danmuView.resume();
     }
 
     @Override
     public void start() {
         super.start();
-        if (haveDanmu()) danmuView.resume();
     }
 
     @Override
     public void pause() {
         super.pause();
-        if (haveDanmu()) danmuView.pause();
     }
 
     @Override
     public void stopPlay() {
         super.stopPlay();
-        if (haveDanmu()) danmuView.stop();
     }
 
     @Override
     public void release() {
         super.release();
-        if (haveDanmu()) danmuView.release();
     }
 
-    private boolean haveDanmu() {
-        return danmuView != null && danmuView.isPrepared();
     }
 
-    public void setDanmuView(DanmakuView view) {
         view.setCallback(this);
-        danmuView = view;
     }
-    public DanmakuView getDanmuView() {
-        return danmuView;
     }
 
     @Override
     public void prepared() {
         App.post(() -> {
-            if (danmuView == null) return;
-            if (isPlaying() && danmuView.isPrepared()) danmuView.start(getCurrentPosition());
         });
     }
 
     @Override
-    public void updateTimer(DanmakuTimer timer) {
 
     }
 
     @Override
-    public void danmakuShown(BaseDanmaku danmaku) {
 
     }
 
