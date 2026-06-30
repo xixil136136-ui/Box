@@ -105,7 +105,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
 
     @Override
     protected void init() {
-        tvFastSearchText = findViewById(resId("showFastSearch")Text);
+        tvFastSearchText = findViewById(R.id.showFastSearchText);
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
 
         // ── 全能看：内容管理 ──
