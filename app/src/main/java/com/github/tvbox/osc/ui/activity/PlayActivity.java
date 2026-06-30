@@ -248,8 +248,8 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                /* DanmuSettingDialog */ Object dialog = new /* DanmuSettingDialog */ Object(PlayActivity.this, mDanmuView);
-                dialog.show();
+                /* DanmuSettingDialog */ Object dialog = null;
+                
             }
 
             @Override
@@ -510,7 +510,7 @@ public class PlayActivity extends BaseActivity {
                 return oldItem.trackId == newItem.trackId;
             }
         }, bean, trackInfo.getSubtitleSelected(false));
-        dialog.show();
+        
     }
 
     void selectMyAudioTrack() {
@@ -589,7 +589,7 @@ public class PlayActivity extends BaseActivity {
                 return oldItem.trackId == newItem.trackId;
             }
         }, bean, trackInfo.getAudioSelected(false));
-        dialog.show();
+        
     }
 
     void openMyVideo() {
