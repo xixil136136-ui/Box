@@ -74,7 +74,6 @@ import com.github.tvbox.osc.server.ControlManager;
 import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
-import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog;
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -160,7 +159,10 @@ public class PlayActivity extends BaseActivity {
     public static final int BROADCAST_ACTION_NEXT = 2;
 
     ExecutorService executorService;
-            
+    private /* DanmakuView removed */ Object mDanmuView;
+    private /* DanmakuContext removed */ Object mDanmakuContext;
+    private String danmuText; // not used
+
     @Override
     protected int getLayoutResID() {
         return R.layout.activity_play;
@@ -172,7 +174,7 @@ public class PlayActivity extends BaseActivity {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
         if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
-            setDanmuViewSettings((Boolean) event.obj);
+            // Danmu removed
         }
     }
 
@@ -246,7 +248,7 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                DanmuSettingDialog dialog = new DanmuSettingDialog(PlayActivity.this, mDanmuView);
+                /* DanmuSettingDialog */ Object dialog = new /* DanmuSettingDialog */ Object(PlayActivity.this, mDanmuView);
                 dialog.show();
             }
 
@@ -1012,18 +1014,7 @@ public class PlayActivity extends BaseActivity {
         }
     };
 
-    private void checkDanmu(String danmu) {
-        danmuText = danmu;
-        mDanmuView.release();
-        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
-        if (TextUtils.isEmpty(danmuText)
-                || !HawkUtils.getDanmuOpen()
-                || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode())) return;
-        if (!danmuText.isEmpty()) {
-            mController.setHasDanmu(true);
-            setDanmuViewSettings(true);
-        }
-    }
+    
 
     private void initData() {
         Intent intent = getIntent();
