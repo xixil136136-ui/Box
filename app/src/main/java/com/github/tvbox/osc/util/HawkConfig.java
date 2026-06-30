@@ -76,6 +76,10 @@ public class HawkConfig {
     public static boolean isDebug() {
         return Hawk.get(DEBUG_OPEN, false);
     }
+    // Cloud Drive
+    public static final String CLOUD_DRIVES = "cloud_drives";
+    public static final String CLOUD_DRIVE_COUNT = "cloud_drive_count";
+
         public static final String ADMIN_PASSWORD = "admin_password";
     public static final String ADULT_CONTENT = "adult_content_enabled";
 
