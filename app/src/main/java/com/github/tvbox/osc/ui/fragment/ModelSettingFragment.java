@@ -126,9 +126,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
             });
             pwdDialog.show();
         });
-        findViewById(R.id.llAdultChangePwd).setOnClickListener(v -> {
+        findViewById(R.id.llAdultChangePwd).setOnClickListener(ve -> {
             FastClickCheckUtil.check(v);
-            AdminPasswordDialog verifyDialog2 = new AdminPasswordDialog(mActivity, "身份验证", false);
+            AdminPasswordDialog verifyDialog = new AdminPasswordDialog(mActivity, "身份验证", false);
             verifyDialog2.setOnPasswordVerifyListener(() -> {
                 AdminPasswordDialog setPwdDialog2 = new AdminPasswordDialog(mActivity, "设置新密码", true);
                 setPwdDialog2.show();
@@ -745,9 +745,9 @@ public class ModelSettingFragment extends BaseLazyFragment {
             });
             pwdDialog.show();
         });
-        findViewById(R.id.llAdultChangePwd).setOnClickListener(v -> {
+        findViewById(R.id.llAdultChangePwd).setOnClickListener(ve -> {
             FastClickCheckUtil.check(v);
-            AdminPasswordDialog verifyDialog2 = new AdminPasswordDialog(mActivity, "身份验证", false);
+            AdminPasswordDialog verifyDialog = new AdminPasswordDialog(mActivity, "身份验证", false);
             verifyDialog2.setOnPasswordVerifyListener(() -> {
                 AdminPasswordDialog setPwdDialog2 = new AdminPasswordDialog(mActivity, "设置新密码", true);
                 setPwdDialog2.show();
