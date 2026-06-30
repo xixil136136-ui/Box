@@ -141,7 +141,7 @@ public class PlayFragment extends BaseLazyFragment {
 
     ExecutorService executorService;
     private View mDanmuView;
-    private Object mDanmakuContext;
+    private Object mObject;
     private String danmuText;
 
     private String videoURL;
@@ -159,7 +159,7 @@ public class PlayFragment extends BaseLazyFragment {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
         if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
-            
+            setDanmuViewSettings((Boolean) event.obj);
         }
     }
 
@@ -168,11 +168,43 @@ public class PlayFragment extends BaseLazyFragment {
         initView();
         initViewModel();
         initData();
-        
+        initDanmuView();
     }
-    
+    private void initDanmuView() {
+        mDanmuView  = findViewById(R.id.danmaku);
+        mObject = Object.create();
+        mVideoView.setDanmuView(mDanmuView);
+    }
 
-    
+    private void setDanmuViewSettings(boolean reload) {
+        float speed = HawkUtils.getDanmuSpeed();
+        float alpha = HawkUtils.getDanmuAlpha();
+        float sizeScale = HawkUtils.getDanmuSizeScale();
+        int maxLine = HawkUtils.getDanmuMaxLine();
+        HashMap<Integer, Integer> maxLines = new HashMap<>();
+        maxLines.put(Object.TYPE_FIX_TOP, maxLine);
+        maxLines.put(Object.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(Object.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(Object.TYPE_FIX_BOTTOM, maxLine);
+        mObject.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        mObject.setDanmakuStyle(Object.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
+        if (reload){
+            if (executorService != null){
+                executorService.shutdownNow();
+                executorService = null;
+            }
+            executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(() -> {
+                mDanmuView.release();
+                mDanmuView.prepare(new Object(danmuText), mObject);
+                App.post(()->{
+                    if(mVideoView!=null && mVideoView.isPlaying()){
+                        mDanmuView.seekTo(mVideoView.getCurrentPosition());
+                    }
+                });
+            });
+        }
+    }
 
     public VodController getVodController() {
         return mController;
@@ -235,7 +267,7 @@ public class PlayFragment extends BaseLazyFragment {
             @Override
             public void showDanmuSetting() {
                 final DetailActivity activity = (DetailActivity) mActivity;
-                /* DanmuSettingDialog */ Object dialog = new /* DanmuSettingDialog */ Object(activity, mDanmuView);
+                Object dialog = new Object(activity, mDanmuView);
                 dialog.show();
             }
 
@@ -1002,7 +1034,18 @@ public class PlayFragment extends BaseLazyFragment {
         }        
     };
 
-    
+    private void checkDanmu(String danmu) {
+        danmuText = danmu;
+        mDanmuView.release();
+        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
+        if (TextUtils.isEmpty(danmuText)
+                || !HawkUtils.getDanmuOpen()
+                || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInPictureInPictureMode())) return;
+        if (!danmuText.isEmpty()) {
+            mController.setHasDanmu(true);
+            setDanmuViewSettings(true);
+        }
+    }
 
     public void setData(Bundle bundle) {
         mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
