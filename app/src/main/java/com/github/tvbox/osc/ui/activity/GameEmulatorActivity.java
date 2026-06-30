@@ -36,6 +36,7 @@ public class GameEmulatorActivity extends BaseActivity {
     private TextView tvLoading;
     private String gameUrl;
 
+    private boolean isPageLoaded = false;
     private boolean isDestroyed = false;
 
     @Override
@@ -80,8 +81,7 @@ public class GameEmulatorActivity extends BaseActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 tvLoading.setVisibility(View.GONE);
-                // 页面加载完后注入按键映射JS
-                injectKeyMappingScript();
+                isPageLoaded = true;
             }
         });
 

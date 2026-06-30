@@ -60,6 +60,7 @@ import xyz.doikki.videoplayer.player.AndroidMediaPlayer;
 import com.github.tvbox.osc.player.TrackInfo;
 import com.github.tvbox.osc.player.TrackInfoBean;
 import com.github.tvbox.osc.player.controller.VodController;
+import com.github.tvbox.osc.player.danmu.BiliDanmuLoader;
 import com.github.tvbox.osc.player.danmu.Parser;
 import com.github.tvbox.osc.player.thirdparty.Kodi;
 import com.github.tvbox.osc.player.thirdparty.MXPlayer;
@@ -275,6 +276,26 @@ public class PlayFragment extends BaseLazyFragment {
                 final DetailActivity activity = (DetailActivity) mActivity;
                 DanmuSettingDialog dialog = new DanmuSettingDialog(activity, mDanmuView);
                 dialog.show();
+            }
+
+            @Override
+            public void showBiliDanmuInput() {
+                final DetailActivity activity = (DetailActivity) mActivity;
+                android.widget.EditText et = new android.widget.EditText(activity);
+                et.setHint("输入BV号 (如 BV1xx...)");
+                et.setInputType(android.text.InputType.TYPE_CLASS_TEXT);
+                et.setTextColor(android.graphics.Color.WHITE);
+                et.setHintTextColor(android.graphics.Color.GRAY);
+                new androidx.appcompat.app.AlertDialog.Builder(activity)
+                        .setTitle("加载B站弹幕")
+                        .setView(et)
+                        .setPositiveButton("加载", (dialog, which) -> {
+                            String bvid = et.getText().toString().trim();
+                            if (bvid.isEmpty()) return;
+                            loadBiliDanmu(bvid);
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
             }
 
             @Override
@@ -1051,6 +1072,28 @@ public class PlayFragment extends BaseLazyFragment {
             mController.setHasDanmu(true);
             setDanmuViewSettings(true);
         }
+    }
+
+    private void loadBiliDanmu(String bvid) {
+        new Thread(() -> {
+            try {
+                String danmuXml = BiliDanmuLoader.fetchDanmuXml(bvid);
+                if (danmuXml == null) {
+                    mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "获取B站弹幕失败", Toast.LENGTH_SHORT).show());
+                    return;
+                }
+                mActivity.runOnUiThread(() -> {
+                    checkDanmu(danmuXml);
+                    if (mDanmuView.getVisibility() == View.VISIBLE) {
+                        mDanmuView.prepare(new Parser(danmuXml), mDanmakuContext);
+                        mDanmuView.start();
+                        Toast.makeText(mActivity, "B站弹幕加载成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                mActivity.runOnUiThread(() -> Toast.makeText(mActivity, "弹幕加载异常: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+        }).start();
     }
 
     public void setData(Bundle bundle) {
