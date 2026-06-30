@@ -159,9 +159,9 @@ public class PlayActivity extends BaseActivity {
     public static final int BROADCAST_ACTION_NEXT = 2;
 
     ExecutorService executorService;
-    private /* DanmakuView removed */ Object mDanmuView;
-    private /* DanmakuContext removed */ Object mDanmakuContext;
-    private String danmuText; // not used
+    private /* DanmakuView */ Object mDanmuView;
+    private /* DanmakuContext */ Object mDanmakuContext;
+    private String danmuText;
 
     @Override
     protected int getLayoutResID() {
@@ -174,7 +174,7 @@ public class PlayActivity extends BaseActivity {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
         if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
-            // Danmu removed
+            
         }
     }
 
@@ -248,7 +248,7 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                /* DanmuSettingDialog */ Object dialog = null;
+                /* DanmuSettingDialog removed */;
                 
             }
 
