@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.github.tvbox.osc.base.App;
 
-import master.flame.danmaku.danmaku.model.DanmakuTimer;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.VideoView;
 
@@ -92,7 +91,7 @@ public class MyVideoView extends VideoView implements Object.Callback {
     }
 
     @Override
-    public void updateTimer(DanmakuTimer timer) {
+    public void updateTimer(Object timer) {
 
     }
 
