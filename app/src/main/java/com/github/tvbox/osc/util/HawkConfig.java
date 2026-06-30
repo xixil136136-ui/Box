@@ -76,5 +76,8 @@ public class HawkConfig {
     public static boolean isDebug() {
         return Hawk.get(DEBUG_OPEN, false);
     }
+        public static final String ADMIN_PASSWORD = "admin_password";
+    public static final String ADULT_CONTENT = "adult_content_enabled";
+
     public static boolean hotVodDelete;
 }

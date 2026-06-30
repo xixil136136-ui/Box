@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TVBox</string>
+    <string name="app_name">全能看</string>
     <string name="app_home">首页</string>
     <string name="app_source"></string>
 
@@ -76,6 +76,10 @@
     <string name="mn_ijk_cache_play">IJK缓存</string>
     <string name="mn_reset">重置</string>
     <string name="mn_fastsearch">聚搜</string>
+    <string name="mn_adult_management">内容管理</string>
+    <string name="mn_adult_toggle">成人内容</string>
+    <string name="mn_adult_hide">隐藏</string>
+    <string name="mn_adult_show">显示</string>
 
     // Settings Dialog Pop-Up //
     <string name="dia_source">请选择数据源</string>

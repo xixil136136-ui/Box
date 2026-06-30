@@ -11,7 +11,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.github.tvbox.osc.tk'
+        applicationId 'com.quanneng.kan'
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.".concat(buildTime())
@@ -57,7 +57,7 @@ android {
 
         hisense {
             //海信的
-            applicationId 'com.github.hisense.osc.tk'
+            applicationId 'com.quanneng.kan.hisense'
             dimension = "brand"
         }
         normal {
@@ -76,7 +76,7 @@ android {
         variant.outputs.configureEach { output ->
             def flavorNames = variant.productFlavors.collect { it.name == "normal" ? "java" : it.name }.join('-')
             // 构建自定义文件名
-            def fileName = "TVBox_${variant.buildType.name}-${flavorNames}.apk"
+            def fileName = "quannengkan_${variant.buildType.name}-${flavorNames}.apk"
             outputFileName = fileName
         }
     }
