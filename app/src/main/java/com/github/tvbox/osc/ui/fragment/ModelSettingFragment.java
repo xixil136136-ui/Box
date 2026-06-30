@@ -32,6 +32,7 @@ import com.github.tvbox.osc.ui.dialog.MediaSettingDialog;
 import com.github.tvbox.osc.ui.dialog.ResetDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.XWalkInitDialog;
+import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.HistoryHelper;
@@ -42,7 +43,6 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
-import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 
@@ -105,6 +105,42 @@ public class ModelSettingFragment extends BaseLazyFragment {
     protected void init() {
         tvFastSearchText = findViewById(R.id.showFastSearchText);
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
+
+        // ── 全能看：内容管理 ──
+        TextView tvAdultStatus2 = findViewById(R.id.tvAdultStatus);
+        if (tvAdultStatus2 != null) {
+            boolean adultEnabled = Hawk.get(HawkConfig.ADULT_CONTENT, false);
+            tvAdultStatus2.setText(adultEnabled ? "显示" : "隐藏");
+        }
+        findViewById(R.id.llAdultManage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
+                pwdDialog.setOnPasswordVerifyListener(() -> {
+                    boolean current = Hawk.get(HawkConfig.ADULT_CONTENT, false);
+                    Hawk.put(HawkConfig.ADULT_CONTENT, !current);
+                    TextView tvStatus = findViewById(R.id.tvAdultStatus);
+                    if (tvStatus != null) {
+                        tvStatus.setText(current ? "隐藏" : "显示");
+                    }
+                    Toast.makeText(mContext, current ? "成人内容已隐藏" : "成人内容已显示", Toast.LENGTH_SHORT).show();
+                });
+                pwdDialog.show();
+            }
+        });
+        findViewById(R.id.llAdultChangePwd).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                AdminPasswordDialog verifyDialog = new AdminPasswordDialog(mActivity, "身份验证", false);
+                verifyDialog.setOnPasswordVerifyListener(() -> {
+                    AdminPasswordDialog setPwdDialog = new AdminPasswordDialog(mActivity, "设置新密码", true);
+                    setPwdDialog.show();
+                });
+                verifyDialog.show();
+            }
+        });
         tvDebugOpen = findViewById(R.id.tvDebugOpen);
         tvDebugOpen.setText(Hawk.get(HawkConfig.DEBUG_OPEN, false) ? "开启" : "关闭");
         tvApi = findViewById(R.id.tvApi);
