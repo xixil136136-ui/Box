@@ -11,9 +11,8 @@ import com.github.tvbox.osc.base.App;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.VideoView;
 
-public class MyVideoView extends VideoView implements Object.Callback {
-    private View danmuView;
-
+public class MyVideoView extends VideoView implements DrawHandler.Callback {
+    
     public MyVideoView(@NonNull Context context) {
         super(context, null);
     }
@@ -74,13 +73,11 @@ public class MyVideoView extends VideoView implements Object.Callback {
         return danmuView != null && danmuView.isPrepared();
     }
 
-    public void setDanmuView(View view) {
+    public void setDanmuView(DanmakuView view) {
         view.setCallback(this);
         danmuView = view;
     }
-    public View getDanmuView() {
-        return danmuView;
-    }
+    
 
     @Override
     public void prepared() {
@@ -96,7 +93,7 @@ public class MyVideoView extends VideoView implements Object.Callback {
     }
 
     @Override
-    public void danmakuShown(Object danmaku) {
+    public void danmakuShown(BaseDanmaku danmaku) {
 
     }
 
