@@ -12,8 +12,8 @@ import master.flame.danmaku.danmaku.model.DanmakuTimer;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.VideoView;
 
-public class MyVideoView extends VideoView implements Object /* DrawHandler removed */.Callback {
-    private DanmakuView danmuView;
+public class MyVideoView extends VideoView implements Object.Callback {
+    private View danmuView;
 
     public MyVideoView(@NonNull Context context) {
         super(context, null);
@@ -75,11 +75,11 @@ public class MyVideoView extends VideoView implements Object /* DrawHandler remo
         return danmuView != null && danmuView.isPrepared();
     }
 
-    public void setDanmuView(DanmakuView view) {
+    public void setDanmuView(View view) {
         view.setCallback(this);
         danmuView = view;
     }
-    public DanmakuView getDanmuView() {
+    public View getDanmuView() {
         return danmuView;
     }
 
