@@ -42,7 +42,6 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
-import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 
@@ -105,36 +104,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
     protected void init() {
         tvFastSearchText = findViewById(R.id.showFastSearchText);
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
-        // 全能看：初始化成人内容状态
-        TextView tvAdultStatus = findViewById(R.id.tvAdultStatus);
-        if (tvAdultStatus != null) {
-            boolean adultEnabled = Hawk.get(HawkConfig.ADULT_CONTENT, false);
-            tvAdultStatus.setText(adultEnabled ? "显示" : "隐藏");
-        }
-        // 全能看：内容管理
-        findViewById(R.id.llAdultManage).setOnClickListener(v -> {
-            FastClickCheckUtil.check(v);
-            AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
-            pwdDialog.setOnPasswordVerifyListener(() -> {
-                boolean current = Hawk.get(HawkConfig.ADULT_CONTENT, false);
-                Hawk.put(HawkConfig.ADULT_CONTENT, !current);
-                TextView tvAdultStatus2 = findViewById(R.id.tvAdultStatus);
-                if (tvAdultStatus2 != null) {
-                    tvAdultStatus2.setText(current ? "隐藏" : "显示");
-                }
-                Toast.makeText(mContext, current ? "成人内容已隐藏" : "成人内容已显示", Toast.LENGTH_SHORT).show();
-            });
-            pwdDialog.show();
-        });
-        findViewById(R.id.llAdultChangePwd).setOnClickListener(ve -> {
-            FastClickCheckUtil.check(v);
-            AdminPasswordDialog verifyDialog = new AdminPasswordDialog(mActivity, "身份验证", false);
-            verifyDialog2.setOnPasswordVerifyListener(() -> {
-                AdminPasswordDialog setPwdDialog2 = new AdminPasswordDialog(mActivity, "设置新密码", true);
-                setPwdDialog2.show();
-            });
-            verifyDialog.show();
-        });
         tvDebugOpen = findViewById(R.id.tvDebugOpen);
         tvDebugOpen.setText(Hawk.get(HawkConfig.DEBUG_OPEN, false) ? "开启" : "关闭");
         tvApi = findViewById(R.id.tvApi);
@@ -724,36 +693,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 FastClickCheckUtil.check(v);
                 Hawk.put(HawkConfig.FAST_SEARCH_MODE, !Hawk.get(HawkConfig.FAST_SEARCH_MODE, false));
                 tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
-        // 全能看：初始化成人内容状态
-        TextView tvAdultStatus = findViewById(R.id.tvAdultStatus);
-        if (tvAdultStatus != null) {
-            boolean adultEnabled = Hawk.get(HawkConfig.ADULT_CONTENT, false);
-            tvAdultStatus.setText(adultEnabled ? "显示" : "隐藏");
-        }
-        // 全能看：内容管理
-        findViewById(R.id.llAdultManage).setOnClickListener(v -> {
-            FastClickCheckUtil.check(v);
-            AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
-            pwdDialog.setOnPasswordVerifyListener(() -> {
-                boolean current = Hawk.get(HawkConfig.ADULT_CONTENT, false);
-                Hawk.put(HawkConfig.ADULT_CONTENT, !current);
-                TextView tvAdultStatus2 = findViewById(R.id.tvAdultStatus);
-                if (tvAdultStatus2 != null) {
-                    tvAdultStatus2.setText(current ? "隐藏" : "显示");
-                }
-                Toast.makeText(mContext, current ? "成人内容已隐藏" : "成人内容已显示", Toast.LENGTH_SHORT).show();
-            });
-            pwdDialog.show();
-        });
-        findViewById(R.id.llAdultChangePwd).setOnClickListener(ve -> {
-            FastClickCheckUtil.check(v);
-            AdminPasswordDialog verifyDialog = new AdminPasswordDialog(mActivity, "身份验证", false);
-            verifyDialog2.setOnPasswordVerifyListener(() -> {
-                AdminPasswordDialog setPwdDialog2 = new AdminPasswordDialog(mActivity, "设置新密码", true);
-                setPwdDialog2.show();
-            });
-            verifyDialog.show();
-        });
             }
         });
         // Select App Language ( English / Chinese ) -----------------
