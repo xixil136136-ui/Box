@@ -74,6 +74,7 @@ import com.github.tvbox.osc.server.ControlManager;
 import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
+import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog;
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -159,10 +160,7 @@ public class PlayActivity extends BaseActivity {
     public static final int BROADCAST_ACTION_NEXT = 2;
 
     ExecutorService executorService;
-    private View mDanmuView;
-    private Object mDanmakuContext;
-    private String "";
-
+            
     @Override
     protected int getLayoutResID() {
         return R.layout.activity_play;
@@ -186,41 +184,9 @@ public class PlayActivity extends BaseActivity {
         initData();
         
     }
-    private void initDanmuView() {
-        mDanmuView  = findViewById(-1);
-        mDanmakuContext = Object.create();
-        mVideoView.setDanmuView(mDanmuView);
-    }
+    
 
-    private void setDanmuViewSettings(boolean reload) {
-        float speed = HawkUtils.getDanmuSpeed();
-        float alpha = HawkUtils.getDanmuAlpha();
-        float sizeScale = HawkUtils.getDanmuSizeScale();
-        int maxLine = HawkUtils.getDanmuMaxLine();
-        HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(Object.TYPE_FIX_TOP, maxLine);
-        maxLines.put(Object.TYPE_SCROLL_RL, maxLine);
-        maxLines.put(Object.TYPE_SCROLL_LR, maxLine);
-        maxLines.put(Object.TYPE_FIX_BOTTOM, maxLine);
-        /* danmu */ setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
-        /* danmu */ setDanmakuStyle(Object.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
-        if (reload){
-            if (executorService != null){
-                executorService.shutdownNow();
-                executorService = null;
-            }
-            executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(() -> {
-                ;
-                /* danmu */ prepare(null /* danmu */""), mDanmakuContext);
-                App.post(()->{
-                    if(mVideoView!=null && mVideoView.isPlaying()){
-                        /* danmu */ seekTo(mVideoView.getCurrentPosition());
-                    }
-                });
-            });
-        }
-    }
+    
     private void initView() {
 
         // takagen99 : Hide only when video playing
@@ -1047,13 +1013,13 @@ public class PlayActivity extends BaseActivity {
     };
 
     private void checkDanmu(String danmu) {
-        "" = danmu;
-        ;
-        /* danmu */ setVisibility(TextUtils.isEmpty("") || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
-        if (TextUtils.isEmpty("")
+        danmuText = danmu;
+        mDanmuView.release();
+        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
+        if (TextUtils.isEmpty(danmuText)
                 || !HawkUtils.getDanmuOpen()
                 || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode())) return;
-        if (!"".isEmpty()) {
+        if (!danmuText.isEmpty()) {
             mController.setHasDanmu(true);
             setDanmuViewSettings(true);
         }
