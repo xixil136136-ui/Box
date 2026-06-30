@@ -2,7 +2,7 @@
 buildscript {
     ext.kotlin_version = "1.9.25"
     repositories {
-        # aliyun mirror removed
+        // aliyun mirror removed
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -23,7 +23,7 @@ buildscript {
 
 allprojects {
     repositories {
-        # aliyun mirror removed
+        // aliyun mirror removed
         google()
         mavenCentral()
         gradlePluginPortal()
