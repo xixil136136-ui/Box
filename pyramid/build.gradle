@@ -11,8 +11,10 @@ android {
         targetSdkVersion 28
 
         python {
-            buildPython("/usr/bin/python3")
+            // buildPython - CI用系统默认Python
+        buildPython("/usr/bin/python3")
             pip {
+            options = ["--timeout", "30"]
                 install "lxml"
                 install "ujson"
                 install "pyquery"
