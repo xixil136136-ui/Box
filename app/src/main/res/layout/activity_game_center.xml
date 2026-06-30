@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FF1A1A2E">
+
+    <!-- 标题栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/vs_60"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/vs_20"
+        android:paddingRight="@dimen/vs_20"
+        android:background="#FF16213E">
+
+        <ImageView
+            android:id="@+id/btnHome"
+            android:layout_width="@dimen/vs_40"
+            android:layout_height="@dimen/vs_40"
+            android:focusable="true"
+            android:src="@drawable/v_back"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/vs_20"
+            android:text="游戏中心"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_34"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tvKeyMapHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="方向键=方向  OK=空格"
+            android:textColor="#FFAAAAAA"
+            android:textSize="@dimen/ts_18" />
+    </LinearLayout>
+
+    <!-- 左右布局 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <!-- 左侧分组列表 -->
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#FF0F3460">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/vs_40"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/vs_15"
+                android:text="游戏分类"
+                android:textColor="#FFAAAAAA"
+                android:textSize="@dimen/ts_20" />
+
+            <com.owen.tvrecyclerview.widget.TvRecyclerView
+                android:id="@+id/rvGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <!-- 右侧游戏列表 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:background="#FF1A1A2E">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/vs_40"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/vs_15"
+                android:text="选择游戏开始"
+                android:textColor="#FFAAAAAA"
+                android:textSize="@dimen/ts_20" />
+
+            <com.owen.tvrecyclerview.widget.TvRecyclerView
+                android:id="@+id/rvGames"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 底部提示 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/vs_60"
+        android:gravity="center"
+        android:background="#FF16213E"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💡 支持HTML5在线游戏  |  遥控器方向键操控  |  游戏过程中按【返回】可退出"
+            android:textColor="#FFAAAAAA"
+            android:textSize="@dimen/ts_18" />
+    </LinearLayout>
+</LinearLayout>

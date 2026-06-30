@@ -54,6 +54,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
     private LinearLayout tvCollect;
     private LinearLayout tvPush;
     private LinearLayout tvRadio;
+    private LinearLayout tvGame;
     public static HomeHotVodAdapter homeHotVodAdapter;
     private List<Movie.Video> homeSourceRec;
     public static TvRecyclerView tvHotListForGrid;
@@ -121,6 +122,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvHistory = findViewById(R.id.tvHistory);
         tvPush = findViewById(R.id.tvPush);
         tvRadio = findViewById(R.id.tvRadio);
+        tvGame = findViewById(R.id.tvGame);
         tvDrive.setOnClickListener(this);
         tvLive.setOnClickListener(this);
         tvSearch.setOnClickListener(this);
@@ -128,6 +130,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvHistory.setOnClickListener(this);
         tvPush.setOnClickListener(this);
         tvRadio.setOnClickListener(this);
+        tvGame.setOnClickListener(this);
         tvCollect.setOnClickListener(this);
         tvDrive.setOnFocusChangeListener(focusChangeListener);
         tvLive.setOnFocusChangeListener(focusChangeListener);
@@ -136,6 +139,7 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         tvHistory.setOnFocusChangeListener(focusChangeListener);
         tvPush.setOnFocusChangeListener(focusChangeListener);
         tvRadio.setOnFocusChangeListener(focusChangeListener);
+        tvGame.setOnFocusChangeListener(focusChangeListener);
         tvCollect.setOnFocusChangeListener(focusChangeListener);
         tvHotListForLine = findViewById(R.id.tvHotListForLine);
         tvHotListForGrid = findViewById(R.id.tvHotListForGrid);
@@ -370,6 +374,8 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
             jumpActivity(DriveActivity.class);
         } else if (v.getId() == R.id.tvRadio) {
             jumpActivity(RadioActivity.class);
+        } else if (v.getId() == R.id.tvGame) {
+            jumpActivity(GameCenterActivity.class);
         }
     }
 

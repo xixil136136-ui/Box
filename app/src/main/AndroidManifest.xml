@@ -101,6 +101,12 @@
             android:name=".ui.activity.RadioActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
+            android:name=".ui.activity.GameCenterActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".ui.activity.GameEmulatorActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
             android:name=".ui.activity.KidsModeLockActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
