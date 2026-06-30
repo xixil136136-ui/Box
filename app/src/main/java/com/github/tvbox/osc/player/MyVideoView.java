@@ -8,15 +8,11 @@ import androidx.annotation.Nullable;
 
 import com.github.tvbox.osc.base.App;
 
-// import master.flame.danmaku.controller.Object; (danmu removed)
-// import master.flame.danmaku.danmaku.model.BaseDanmaku; (danmu removed)
-// import master.flame.danmaku.danmaku.model.DanmakuTimer; (danmu removed)
-// import master.flame.danmaku.ui.widget.Object; (danmu removed)
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.VideoView;
 
 public class MyVideoView extends VideoView implements Object.Callback {
-    private Object danmuView;
+    private View danmuView;
 
     public MyVideoView(@NonNull Context context) {
         super(context, null);
@@ -78,11 +74,11 @@ public class MyVideoView extends VideoView implements Object.Callback {
         return danmuView != null && danmuView.isPrepared();
     }
 
-    public void setDanmuView(Object view) {
+    public void setDanmuView(View view) {
         view.setCallback(this);
         danmuView = view;
     }
-    public Object getDanmuView() {
+    public View getDanmuView() {
         return danmuView;
     }
 
@@ -100,7 +96,7 @@ public class MyVideoView extends VideoView implements Object.Callback {
     }
 
     @Override
-    public void danmakuShown(BaseDanmaku danmaku) {
+    public void danmakuShown(Object danmaku) {
 
     }
 
