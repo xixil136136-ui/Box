@@ -60,6 +60,7 @@ import xyz.doikki.videoplayer.player.AndroidMediaPlayer;
 import com.github.tvbox.osc.player.TrackInfo;
 import com.github.tvbox.osc.player.TrackInfoBean;
 import com.github.tvbox.osc.player.controller.VodController;
+// import com.github.tvbox.osc.player.danmu.Parser; (danmu removed)
 import com.github.tvbox.osc.player.thirdparty.Kodi;
 import com.github.tvbox.osc.player.thirdparty.MXPlayer;
 import com.github.tvbox.osc.player.thirdparty.ReexPlayer;
@@ -68,7 +69,7 @@ import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.activity.DetailActivity;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
-import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog;
+// import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog; (danmu removed)
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -125,10 +126,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import master.flame.danmaku.danmaku.model.BaseDanmaku;
-import master.flame.danmaku.danmaku.model.IDisplayer;
-import master.flame.danmaku.danmaku.model.android.DanmakuContext;
-import master.flame.danmaku.ui.widget.DanmakuView;
+// import master.flame.danmaku.danmaku.model.BaseDanmaku; (danmu removed)
+// import master.flame.danmaku.danmaku.model.Object; (danmu removed)
+// import master.flame.danmaku.danmaku.model.android.Object; (danmu removed)
+// import master.flame.danmaku.ui.widget.Object; (danmu removed)
 import me.jessyan.autosize.AutoSize;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
@@ -145,8 +146,8 @@ public class PlayFragment extends BaseLazyFragment {
     private Handler mHandler;
 
     ExecutorService executorService;
-    private DanmakuView mDanmuView;
-    private DanmakuContext mDanmakuContext;
+    private Object mDanmuView;
+    private Object mObject;
     private String danmuText;
 
     private String videoURL;
@@ -177,7 +178,7 @@ public class PlayFragment extends BaseLazyFragment {
     }
     private void initDanmuView() {
         mDanmuView  = findViewById(R.id.danmaku);
-        mDanmakuContext = DanmakuContext.create();
+        mObject = Object.create();
         mVideoView.setDanmuView(mDanmuView);
     }
 
@@ -187,12 +188,12 @@ public class PlayFragment extends BaseLazyFragment {
         float sizeScale = HawkUtils.getDanmuSizeScale();
         int maxLine = HawkUtils.getDanmuMaxLine();
         HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);
-        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);
-        mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
+        maxLines.put(/* BaseDanmaku */ TYPE_FIX_TOP, maxLine);
+        maxLines.put(/* BaseDanmaku */ TYPE_SCROLL_RL, maxLine);
+        maxLines.put(/* BaseDanmaku */ TYPE_SCROLL_LR, maxLine);
+        maxLines.put(/* BaseDanmaku */ TYPE_FIX_BOTTOM, maxLine);
+        mObject.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        mObject.setDanmakuStyle(Object, 3).setDanmakuMargin(8);
         if (reload){
             if (executorService != null){
                 executorService.shutdownNow();
@@ -201,7 +202,7 @@ public class PlayFragment extends BaseLazyFragment {
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
                 mDanmuView.release();
-                mDanmuView.prepare(null /* danmu removed */, mDanmakuContext);
+                mDanmuView.prepare(null /* Parser removed */ (danmuText), mObject);
                 App.post(()->{
                     if(mVideoView!=null && mVideoView.isPlaying()){
                         mDanmuView.seekTo(mVideoView.getCurrentPosition());
