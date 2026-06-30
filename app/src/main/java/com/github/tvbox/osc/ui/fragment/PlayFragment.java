@@ -140,8 +140,8 @@ public class PlayFragment extends BaseLazyFragment {
     private Handler mHandler;
 
     ExecutorService executorService;
-    private /* DanmakuView */ Object mDanmuView;
-    private /* DanmakuContext */ Object mDanmakuContext;
+    private View mDanmuView;
+    private Object mDanmakuContext;
     private String danmuText;
 
     private String videoURL;
