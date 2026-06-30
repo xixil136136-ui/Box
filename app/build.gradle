@@ -156,8 +156,8 @@ dependencies {
 
 
 
-    implementation "com.aliyun.sdk.android:AliyunPlayer:5.5.2.0-full"
-    implementation 'com.alivc.conan:AlivcConan:0.9.5'
+    // implementation "com.aliyun.sdk.android:AliyunPlayer:5.5.2.0-full" # Aliyun Maven 不可用
+    // implementation 'com.alivc.conan:AlivcConan:0.9.5' # Aliyun Maven 不可用
     implementation 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7'
     implementation 'xyz.doikki.android.dkplayer:videocache:3.3.7'
 
