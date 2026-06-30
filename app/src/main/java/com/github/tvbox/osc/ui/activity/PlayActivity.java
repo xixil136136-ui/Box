@@ -96,7 +96,7 @@ import com.github.tvbox.osc.util.thunder.Thunder;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonObject;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.HttpHeaders;
@@ -160,7 +160,7 @@ public class PlayActivity extends BaseActivity {
 
     ExecutorService executorService;
     private View mDanmuView;
-    private Object mDanmakuContext;
+    private Object mObject;
     private String danmuText;
 
     @Override
@@ -174,7 +174,7 @@ public class PlayActivity extends BaseActivity {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
         if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
-            
+            setDanmuViewSettings((Boolean) event.obj);
         }
     }
 
@@ -184,11 +184,43 @@ public class PlayActivity extends BaseActivity {
         initView();
         initViewModel();
         initData();
-        
+        initDanmuView();
     }
-    
+    private void initDanmuView() {
+        mDanmuView  = findViewById(R.id.danmaku);
+        mObject = Object;
+        mVideoView.setDanmuView(mDanmuView);
+    }
 
-    
+    private void setDanmuViewSettings(boolean reload) {
+        float speed = HawkUtils.getDanmuSpeed();
+        float alpha = HawkUtils.getDanmuAlpha();
+        float sizeScale = HawkUtils.getDanmuSizeScale();
+        int maxLine = HawkUtils.getDanmuMaxLine();
+        HashMap<Integer, Integer> maxLines = new HashMap<>();
+        maxLines.put(Object.TYPE_FIX_TOP, maxLine);
+        maxLines.put(Object.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(Object.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(Object.TYPE_FIX_BOTTOM, maxLine);
+        mObject.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        mObject.setDanmakuStyle(Object.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
+        if (reload){
+            if (executorService != null){
+                executorService.shutdownNow();
+                executorService = null;
+            }
+            executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(() -> {
+                mDanmuView.release();
+                mDanmuView.prepare(new Object(danmuText), mObject);
+                App.post(()->{
+                    if(mVideoView!=null && mVideoView.isPlaying()){
+                        mDanmuView.seekTo(mVideoView.getCurrentPosition());
+                    }
+                });
+            });
+        }
+    }
     private void initView() {
 
         // takagen99 : Hide only when video playing
@@ -248,7 +280,8 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                DanmuSettingDialog dialog = /* DanmuSettingDialog removed */
+                Object dialog = null /* DanmuSettingDialog */, mDanmuView);
+                dialog.show();
             }
 
             @Override
@@ -509,7 +542,7 @@ public class PlayActivity extends BaseActivity {
                 return oldItem.trackId == newItem.trackId;
             }
         }, bean, trackInfo.getSubtitleSelected(false));
-        
+        dialog.show();
     }
 
     void selectMyAudioTrack() {
@@ -588,7 +621,7 @@ public class PlayActivity extends BaseActivity {
                 return oldItem.trackId == newItem.trackId;
             }
         }, bean, trackInfo.getAudioSelected(false));
-        
+        dialog.show();
     }
 
     void openMyVideo() {
@@ -1013,7 +1046,18 @@ public class PlayActivity extends BaseActivity {
         }
     };
 
-    
+    private void checkDanmu(String danmu) {
+        danmuText = danmu;
+        mDanmuView.release();
+        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
+        if (TextUtils.isEmpty(danmuText)
+                || !HawkUtils.getDanmuOpen()
+                || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode())) return;
+        if (!danmuText.isEmpty()) {
+            mController.setHasDanmu(true);
+            setDanmuViewSettings(true);
+        }
+    }
 
     private void initData() {
         Intent intent = getIntent();
@@ -1378,7 +1422,7 @@ public class PlayActivity extends BaseActivity {
             mController.showParse(false);
             HashMap<String, String> headers = null;
             if (mVodInfo.playerCfg != null && mVodInfo.playerCfg.length() > 0) {
-                JsonObject playerConfig = JsonParser.parseString(mVodInfo.playerCfg).getAsJsonObject();
+                JsonObject playerConfig = JsonObject.parseString(mVodInfo.playerCfg).getAsJsonObject();
                 if (playerConfig.has("headers")) {
                     headers = new HashMap<>();
                     for (JsonElement headerEl : playerConfig.getAsJsonArray("headers")) {
