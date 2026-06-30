@@ -67,6 +67,7 @@ import xyz.doikki.videoplayer.player.AndroidMediaPlayer;
 import com.github.tvbox.osc.player.TrackInfo;
 import com.github.tvbox.osc.player.TrackInfoBean;
 import com.github.tvbox.osc.player.controller.VodController;
+import com.github.tvbox.osc.player.danmu.Parser;
 import com.github.tvbox.osc.player.thirdparty.Kodi;
 import com.github.tvbox.osc.player.thirdparty.MXPlayer;
 import com.github.tvbox.osc.player.thirdparty.ReexPlayer;
@@ -74,6 +75,7 @@ import com.github.tvbox.osc.server.ControlManager;
 import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
+import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog;
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -96,7 +98,7 @@ import com.github.tvbox.osc.util.thunder.Thunder;
 import com.github.tvbox.osc.viewmodel.SourceViewModel;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.AbsCallback;
 import com.lzy.okgo.model.HttpHeaders;
@@ -133,6 +135,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.IDisplayer;
+import master.flame.danmaku.danmaku.model.android.DanmakuContext;
+import master.flame.danmaku.ui.widget.DanmakuView;
 import me.jessyan.autosize.AutoSize;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
@@ -159,8 +165,8 @@ public class PlayActivity extends BaseActivity {
     public static final int BROADCAST_ACTION_NEXT = 2;
 
     ExecutorService executorService;
-    private View mDanmuView;
-    private Object mObject;
+    private DanmakuView mDanmuView;
+    private DanmakuContext mDanmakuContext;
     private String danmuText;
 
     @Override
@@ -188,7 +194,7 @@ public class PlayActivity extends BaseActivity {
     }
     private void initDanmuView() {
         mDanmuView  = findViewById(R.id.danmaku);
-        mObject = Object;
+        mDanmakuContext = DanmakuContext.create();
         mVideoView.setDanmuView(mDanmuView);
     }
 
@@ -198,12 +204,12 @@ public class PlayActivity extends BaseActivity {
         float sizeScale = HawkUtils.getDanmuSizeScale();
         int maxLine = HawkUtils.getDanmuMaxLine();
         HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(Object.TYPE_FIX_TOP, maxLine);
-        maxLines.put(Object.TYPE_SCROLL_RL, maxLine);
-        maxLines.put(Object.TYPE_SCROLL_LR, maxLine);
-        maxLines.put(Object.TYPE_FIX_BOTTOM, maxLine);
-        mObject.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
-        mObject.setDanmakuStyle(Object.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
+        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);
+        mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
         if (reload){
             if (executorService != null){
                 executorService.shutdownNow();
@@ -212,7 +218,7 @@ public class PlayActivity extends BaseActivity {
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
                 mDanmuView.release();
-                mDanmuView.prepare(new Object(danmuText), mObject);
+                mDanmuView.prepare(new Parser(danmuText), mDanmakuContext);
                 App.post(()->{
                     if(mVideoView!=null && mVideoView.isPlaying()){
                         mDanmuView.seekTo(mVideoView.getCurrentPosition());
@@ -280,7 +286,8 @@ public class PlayActivity extends BaseActivity {
 
             @Override
             public void showDanmuSetting() {
-                /* DanmuSettingDialog removed */
+                DanmuSettingDialog dialog = new DanmuSettingDialog(PlayActivity.this, mDanmuView);
+                dialog.show();
             }
 
             @Override
@@ -1421,7 +1428,7 @@ public class PlayActivity extends BaseActivity {
             mController.showParse(false);
             HashMap<String, String> headers = null;
             if (mVodInfo.playerCfg != null && mVodInfo.playerCfg.length() > 0) {
-                JsonObject playerConfig = JsonObject.parseString(mVodInfo.playerCfg).getAsJsonObject();
+                JsonObject playerConfig = JsonParser.parseString(mVodInfo.playerCfg).getAsJsonObject();
                 if (playerConfig.has("headers")) {
                     headers = new HashMap<>();
                     for (JsonElement headerEl : playerConfig.getAsJsonArray("headers")) {
