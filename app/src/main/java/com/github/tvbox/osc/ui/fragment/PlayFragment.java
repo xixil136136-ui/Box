@@ -693,7 +693,6 @@ public class PlayFragment extends BaseLazyFragment {
             }
         }
 
-
         OkGo.<String>get(url)
                 .tag("m3u8-1")
                 .headers(hheaders)
@@ -1034,18 +1033,7 @@ public class PlayFragment extends BaseLazyFragment {
         }        
     };
 
-    private void checkDanmu(String danmu) {
-        danmuText = danmu;
-        
-        /* danmu removed */ TextUtils.isEmpty(danmuText) || !false ? View.GONE : View.VISIBLE);
-        if (TextUtils.isEmpty(danmuText)
-                || !false
-                || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInPictureInPictureMode())) return;
-        if (!danmuText.isEmpty()) {
-            
-            
-        }
-    }
+    
 
     public void setData(Bundle bundle) {
         mVodInfo = (VodInfo) bundle.getSerializable("VodInfo");
@@ -1699,7 +1687,6 @@ public class PlayFragment extends BaseLazyFragment {
         }
         playUrl(rs.optString("url", ""), headers);
     }
-
 
     private String encodeUrl(String url) {
         try {
