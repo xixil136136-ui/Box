@@ -1,7 +1,6 @@
 package com.github.tvbox.osc.ui.fragment;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +32,6 @@ import com.github.tvbox.osc.ui.dialog.ResetDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.XWalkInitDialog;
 import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
-import android.content.Intent;
-import com.github.tvbox.osc.ui.activity.CardAdminActivity;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.HistoryHelper;
@@ -141,20 +138,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     setPwdDialog.show();
                 });
                 verifyDialog.show();
-            }
-        });
-
-        // ── 全能看：卡密管理 ──
-        findViewById(R.id.llCardMgmt).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FastClickCheckUtil.check(view);
-                try {
-                    Intent intent = new Intent(mActivity, CardAdminActivity.class);
-                    mActivity.startActivity(intent);
-                } catch (Exception e) {
-                    Toast.makeText(mContext, "卡密管理页面暂不可用", Toast.LENGTH_SHORT).show();
-                }
             }
         });
 
@@ -595,7 +578,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-
 
         // Select DECODER Type --------------------------------------------
         //更改选择是否用硬解码还是软解码 改成播放器设置
