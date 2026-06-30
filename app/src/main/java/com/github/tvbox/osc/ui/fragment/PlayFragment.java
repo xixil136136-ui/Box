@@ -60,7 +60,6 @@ import xyz.doikki.videoplayer.player.AndroidMediaPlayer;
 import com.github.tvbox.osc.player.TrackInfo;
 import com.github.tvbox.osc.player.TrackInfoBean;
 import com.github.tvbox.osc.player.controller.VodController;
-// import com.github.tvbox.osc.player.danmu.Parser; (danmu removed)
 import com.github.tvbox.osc.player.thirdparty.Kodi;
 import com.github.tvbox.osc.player.thirdparty.MXPlayer;
 import com.github.tvbox.osc.player.thirdparty.ReexPlayer;
@@ -69,7 +68,6 @@ import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.activity.DetailActivity;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
-// import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog; (danmu removed)
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -126,10 +124,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
-// import master.flame.danmaku.danmaku.model.BaseDanmaku; (danmu removed)
-// import master.flame.danmaku.danmaku.model.Object; (danmu removed)
-// import master.flame.danmaku.danmaku.model.android.Object; (danmu removed)
-// import master.flame.danmaku.ui.widget.Object; (danmu removed)
 import me.jessyan.autosize.AutoSize;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkTimedText;
@@ -146,9 +140,9 @@ public class PlayFragment extends BaseLazyFragment {
     private Handler mHandler;
 
     ExecutorService executorService;
-    private Object mDanmuView;
-    private Object mObject;
-    private String danmuText;
+    private View mDanmuView;
+    private Object mDanmakuContext;
+    private String "";
 
     private String videoURL;
     private long videoDuration = -1;
@@ -174,11 +168,11 @@ public class PlayFragment extends BaseLazyFragment {
         initView();
         initViewModel();
         initData();
-        initDanmuView();
+        
     }
     private void initDanmuView() {
-        mDanmuView  = findViewById(R.id.danmaku);
-        mObject = Object.create();
+        mDanmuView  = findViewById(-1);
+        mDanmakuContext = Object.create();
         mVideoView.setDanmuView(mDanmuView);
     }
 
@@ -188,12 +182,12 @@ public class PlayFragment extends BaseLazyFragment {
         float sizeScale = HawkUtils.getDanmuSizeScale();
         int maxLine = HawkUtils.getDanmuMaxLine();
         HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(/* BaseDanmaku */ TYPE_FIX_TOP, maxLine);
-        maxLines.put(/* BaseDanmaku */ TYPE_SCROLL_RL, maxLine);
-        maxLines.put(/* BaseDanmaku */ TYPE_SCROLL_LR, maxLine);
-        maxLines.put(/* BaseDanmaku */ TYPE_FIX_BOTTOM, maxLine);
-        mObject.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
-        mObject.setDanmakuStyle(Object, 3).setDanmakuMargin(8);
+        maxLines.put(Object.TYPE_FIX_TOP, maxLine);
+        maxLines.put(Object.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(Object.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(Object.TYPE_FIX_BOTTOM, maxLine);
+        /* danmu */ setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        /* danmu */ setDanmakuStyle(Object.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
         if (reload){
             if (executorService != null){
                 executorService.shutdownNow();
@@ -201,11 +195,11 @@ public class PlayFragment extends BaseLazyFragment {
             }
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
-                mDanmuView.release();
-                mDanmuView.prepare(null /* Parser removed */ (danmuText), mObject);
+                ;
+                /* danmu */ prepare(null /* danmu */""), mDanmakuContext);
                 App.post(()->{
                     if(mVideoView!=null && mVideoView.isPlaying()){
-                        mDanmuView.seekTo(mVideoView.getCurrentPosition());
+                        /* danmu */ seekTo(mVideoView.getCurrentPosition());
                     }
                 });
             });
@@ -699,7 +693,6 @@ public class PlayFragment extends BaseLazyFragment {
             }
         }
 
-
         OkGo.<String>get(url)
                 .tag("m3u8-1")
                 .headers(hheaders)
@@ -1041,13 +1034,13 @@ public class PlayFragment extends BaseLazyFragment {
     };
 
     private void checkDanmu(String danmu) {
-        danmuText = danmu;
-        mDanmuView.release();
-        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
-        if (TextUtils.isEmpty(danmuText)
+        "" = danmu;
+        ;
+        /* danmu */ setVisibility(TextUtils.isEmpty("") || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
+        if (TextUtils.isEmpty("")
                 || !HawkUtils.getDanmuOpen()
                 || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInPictureInPictureMode())) return;
-        if (!danmuText.isEmpty()) {
+        if (!"".isEmpty()) {
             mController.setHasDanmu(true);
             setDanmuViewSettings(true);
         }
@@ -1705,7 +1698,6 @@ public class PlayFragment extends BaseLazyFragment {
         }
         playUrl(rs.optString("url", ""), headers);
     }
-
 
     private String encodeUrl(String url) {
         try {
