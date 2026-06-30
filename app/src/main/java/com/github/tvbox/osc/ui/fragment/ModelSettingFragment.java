@@ -141,6 +141,44 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
 
+        // ── 全能看：云盘配置 ──
+        findViewById(R.id.llCloudDrive).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                new AlertDialog.Builder(mActivity)
+                    .setTitle("☁️ 云盘/NAS配置")
+                    .setMessage("在JSON影视源中配置WebDAV地址即可挂载云盘。
+支持: 阿里云盘/夸克网盘/群晖NAS
+
+配置示例:
+ext: "webdav:http://admin:密码@192.168.1.100:5005/视频"")
+                    .setPositiveButton("知道了", null)
+                    .show();
+            }
+        });
+
+        // ── 全能看：音乐电台 ──
+        findViewById(R.id.llMusicRadio).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                new AlertDialog.Builder(mActivity)
+                    .setTitle("🎵 音乐电台")
+                    .setMessage("在JSON影视源中添加音乐站点即可收听。
+
+支持:
+- 网络电台 m3u
+- B站音乐源
+
+配置示例:
+ext: "m3u:https://...radio.m3u"")
+                    .setPositiveButton("知道了", null)
+                    .show();
+            }
+        });
+
+
         // ── 全能看：少儿模式 ──
         TextView tvKidsStatus = findViewById(R.id.tvKidsStatus);
         if (tvKidsStatus != null) {
