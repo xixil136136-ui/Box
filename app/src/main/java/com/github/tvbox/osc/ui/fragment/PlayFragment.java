@@ -140,8 +140,8 @@ public class PlayFragment extends BaseLazyFragment {
     private Handler mHandler;
 
     ExecutorService executorService;
-    private DanmakuView mDanmuView;
-    private DanmakuContext mDanmakuContext;
+    private /* DanmakuView */ Object mDanmuView;
+    private /* DanmakuContext */ Object mDanmakuContext;
     private String danmuText;
 
     private String videoURL;
@@ -159,7 +159,7 @@ public class PlayFragment extends BaseLazyFragment {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
         if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
-            setDanmuViewSettings((Boolean) event.obj);
+            
         }
     }
 
@@ -168,43 +168,11 @@ public class PlayFragment extends BaseLazyFragment {
         initView();
         initViewModel();
         initData();
-        initDanmuView();
+        
     }
-    private void initDanmuView() {
-        mDanmuView  = findViewById(R.id.danmaku);
-        mDanmakuContext = DanmakuContext.create();
-        mVideoView.setDanmuView(mDanmuView);
-    }
+    
 
-    private void setDanmuViewSettings(boolean reload) {
-        float speed = HawkUtils.getDanmuSpeed();
-        float alpha = HawkUtils.getDanmuAlpha();
-        float sizeScale = HawkUtils.getDanmuSizeScale();
-        int maxLine = HawkUtils.getDanmuMaxLine();
-        HashMap<Integer, Integer> maxLines = new HashMap<>();
-        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);
-        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);
-        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);
-        mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
-        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
-        if (reload){
-            if (executorService != null){
-                executorService.shutdownNow();
-                executorService = null;
-            }
-            executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(() -> {
-                
-                mDanmuView.prepare(new Parser(danmuText), mDanmakuContext);
-                App.post(()->{
-                    if(mVideoView!=null && mVideoView.isPlaying()){
-                        mDanmuView.seekTo(mVideoView.getCurrentPosition());
-                    }
-                });
-            });
-        }
-    }
+    
 
     public VodController getVodController() {
         return mController;
@@ -692,6 +660,7 @@ public class PlayFragment extends BaseLazyFragment {
                 hheaders.put(s.getKey(), s.getValue());
             }
         }
+
 
         OkGo.<String>get(url)
                 .tag("m3u8-1")
@@ -1687,6 +1656,7 @@ public class PlayFragment extends BaseLazyFragment {
         }
         playUrl(rs.optString("url", ""), headers);
     }
+
 
     private String encodeUrl(String url) {
         try {
