@@ -68,6 +68,7 @@ import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.activity.DetailActivity;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
+import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog;
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -124,7 +125,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.IDisplayer;
+import master.flame.danmaku.danmaku.model.android.DanmakuContext;
+import master.flame.danmaku.ui.widget.DanmakuView;
 import me.jessyan.autosize.AutoSize;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkTimedText;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.ProgressManager;
 
@@ -138,6 +145,9 @@ public class PlayFragment extends BaseLazyFragment {
     private Handler mHandler;
 
     ExecutorService executorService;
+    private DanmakuView mDanmuView;
+    private DanmakuContext mDanmakuContext;
+    private String danmuText;
 
     private String videoURL;
     private long videoDuration = -1;
@@ -153,6 +163,8 @@ public class PlayFragment extends BaseLazyFragment {
         if (event.type == RefreshEvent.TYPE_SUBTITLE_SIZE_CHANGE) {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
+        if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
+            setDanmuViewSettings((Boolean) event.obj);
         }
     }
 
@@ -161,10 +173,26 @@ public class PlayFragment extends BaseLazyFragment {
         initView();
         initViewModel();
         initData();
+        initDanmuView();
     }
+    private void initDanmuView() {
+        mDanmuView  = findViewById(R.id.danmaku);
+        mDanmakuContext = DanmakuContext.create();
+        mVideoView.setDanmuView(mDanmuView);
     }
 
+    private void setDanmuViewSettings(boolean reload) {
+        float speed = HawkUtils.getDanmuSpeed();
+        float alpha = HawkUtils.getDanmuAlpha();
+        float sizeScale = HawkUtils.getDanmuSizeScale();
+        int maxLine = HawkUtils.getDanmuMaxLine();
         HashMap<Integer, Integer> maxLines = new HashMap<>();
+        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);
+        mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
         if (reload){
             if (executorService != null){
                 executorService.shutdownNow();
@@ -172,8 +200,11 @@ public class PlayFragment extends BaseLazyFragment {
             }
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
+                mDanmuView.release();
+                mDanmuView.prepare(null /* danmu removed */, mDanmakuContext);
                 App.post(()->{
                     if(mVideoView!=null && mVideoView.isPlaying()){
+                        mDanmuView.seekTo(mVideoView.getCurrentPosition());
                     }
                 });
             });
@@ -239,7 +270,9 @@ public class PlayFragment extends BaseLazyFragment {
         mController.setListener(new VodController.VodControlListener() {
 
             @Override
+            public void showDanmuSetting() {
                 final DetailActivity activity = (DetailActivity) mActivity;
+                DanmuSettingDialog dialog = new DanmuSettingDialog(activity, mDanmuView);
                 dialog.show();
             }
 
@@ -665,6 +698,7 @@ public class PlayFragment extends BaseLazyFragment {
             }
         }
 
+
         OkGo.<String>get(url)
                 .tag("m3u8-1")
                 .headers(hheaders)
@@ -962,6 +996,7 @@ public class PlayFragment extends BaseLazyFragment {
                     }
                     String flag = info.optString("flag");
                     String url = info.getString("url");
+                    String danmaku = info.optString("danmaku");
                     HashMap<String, String> headers = null;
                     webUserAgent = null;
                     webHeaderMap = null;
@@ -994,6 +1029,7 @@ public class PlayFragment extends BaseLazyFragment {
                         mController.showParse(false);
                         playUrl(playUrl + url, headers);
                     }
+                    checkDanmu(danmaku);
                 } catch (Throwable th) {
                     errorWithRetry("获取播放信息错误", true);
                 }
@@ -1003,7 +1039,16 @@ public class PlayFragment extends BaseLazyFragment {
         }        
     };
 
+    private void checkDanmu(String danmu) {
+        danmuText = danmu;
+        mDanmuView.release();
+        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
+        if (TextUtils.isEmpty(danmuText)
+                || !HawkUtils.getDanmuOpen()
                 || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && mActivity.isInPictureInPictureMode())) return;
+        if (!danmuText.isEmpty()) {
+            mController.setHasDanmu(true);
+            setDanmuViewSettings(true);
         }
     }
 
@@ -1659,6 +1704,7 @@ public class PlayFragment extends BaseLazyFragment {
         }
         playUrl(rs.optString("url", ""), headers);
     }
+
 
     private String encodeUrl(String url) {
         try {

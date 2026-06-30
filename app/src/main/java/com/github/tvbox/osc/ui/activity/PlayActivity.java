@@ -74,6 +74,7 @@ import com.github.tvbox.osc.server.ControlManager;
 import com.github.tvbox.osc.server.RemoteServer;
 import com.github.tvbox.osc.subtitle.model.Subtitle;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
+import com.github.tvbox.osc.ui.dialog.DanmuSettingDialog;
 import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
@@ -133,7 +134,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import master.flame.danmaku.danmaku.model.BaseDanmaku;
+import master.flame.danmaku.danmaku.model.IDisplayer;
+import master.flame.danmaku.danmaku.model.android.DanmakuContext;
+import master.flame.danmaku.ui.widget.DanmakuView;
 import me.jessyan.autosize.AutoSize;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkTimedText;
 import xyz.doikki.videoplayer.player.AbstractPlayer;
 import xyz.doikki.videoplayer.player.ProgressManager;
 
@@ -157,9 +164,9 @@ public class PlayActivity extends BaseActivity {
     public static final int BROADCAST_ACTION_NEXT = 2;
 
     ExecutorService executorService;
-//     private DanmakuView mDanmuView;  # danmu removed
-//     private DanmakuContext mDanmakuContext;  # danmu removed
-//     private String danmuText;  # danmu removed
+    private DanmakuView mDanmuView;
+    private DanmakuContext mDanmakuContext;
+    private String danmuText;
 
     @Override
     protected int getLayoutResID() {
@@ -171,8 +178,8 @@ public class PlayActivity extends BaseActivity {
         if (event.type == RefreshEvent.TYPE_SUBTITLE_SIZE_CHANGE) {
             mController.mSubtitleView.setTextSize((int) event.obj);
         }
-//         if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {  # danmu removed
-//             setDanmuViewSettings((Boolean) event.obj);  # danmu removed
+        if (event.type == RefreshEvent.TYPE_SET_DANMU_SETTINGS) {
+            setDanmuViewSettings((Boolean) event.obj);
         }
     }
 
@@ -182,22 +189,26 @@ public class PlayActivity extends BaseActivity {
         initView();
         initViewModel();
         initData();
-//         initDanmuView();  # danmu removed
+        initDanmuView();
     }
-    // danmu removed
+    private void initDanmuView() {
+        mDanmuView  = findViewById(R.id.danmaku);
+        mDanmakuContext = DanmakuContext.create();
+        mVideoView.setDanmuView(mDanmuView);
+    }
 
-//     private void setDanmuViewSettings(boolean reload) {  # danmu removed
-//         float speed = HawkUtils.getDanmuSpeed();  # danmu removed
-//         float alpha = HawkUtils.getDanmuAlpha();  # danmu removed
-//         float sizeScale = HawkUtils.getDanmuSizeScale();  # danmu removed
-//         int maxLine = HawkUtils.getDanmuMaxLine();  # danmu removed
+    private void setDanmuViewSettings(boolean reload) {
+        float speed = HawkUtils.getDanmuSpeed();
+        float alpha = HawkUtils.getDanmuAlpha();
+        float sizeScale = HawkUtils.getDanmuSizeScale();
+        int maxLine = HawkUtils.getDanmuMaxLine();
         HashMap<Integer, Integer> maxLines = new HashMap<>();
-//         maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);  # danmu removed
-//         maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);  # danmu removed
-//         maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);  # danmu removed
-//         maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);  # danmu removed
-//         mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);  # danmu removed
-//         mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);  # danmu removed
+        maxLines.put(BaseDanmaku.TYPE_FIX_TOP, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_RL, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_SCROLL_LR, maxLine);
+        maxLines.put(BaseDanmaku.TYPE_FIX_BOTTOM, maxLine);
+        mDanmakuContext.setMaximumLines(maxLines).setScrollSpeedFactor(speed).setDanmakuTransparency(alpha).setScaleTextSize(sizeScale);
+        mDanmakuContext.setDanmakuStyle(IDisplayer.DANMAKU_STYLE_STROKEN, 3).setDanmakuMargin(8);
         if (reload){
             if (executorService != null){
                 executorService.shutdownNow();
@@ -205,11 +216,11 @@ public class PlayActivity extends BaseActivity {
             }
             executorService = Executors.newSingleThreadExecutor();
             executorService.execute(() -> {
-//                 mDanmuView.release();  # danmu removed
-//                 mDanmuView.prepare(new Parser(danmuText), mDanmakuContext);  # danmu removed
+                mDanmuView.release();
+                mDanmuView.prepare(null /* danmu removed */, mDanmakuContext);
                 App.post(()->{
                     if(mVideoView!=null && mVideoView.isPlaying()){
-//                         mDanmuView.seekTo(mVideoView.getCurrentPosition());  # danmu removed
+                        mDanmuView.seekTo(mVideoView.getCurrentPosition());
                     }
                 });
             });
@@ -273,8 +284,8 @@ public class PlayActivity extends BaseActivity {
         mController.setListener(new VodController.VodControlListener() {
 
             @Override
-//             public void showDanmuSetting() {  # danmu removed
-//                 DanmuSettingDialog dialog = new DanmuSettingDialog(PlayActivity.this, mDanmuView);  # danmu removed
+            public void showDanmuSetting() {
+                DanmuSettingDialog dialog = new DanmuSettingDialog(PlayActivity.this, mDanmuView);
                 dialog.show();
             }
 
@@ -997,7 +1008,7 @@ public class PlayActivity extends BaseActivity {
                     }
                     String flag = info.optString("flag");
                     String url = info.getString("url");
-//                     String danmaku = info.optString("danmaku");  # danmu removed
+                    String danmaku = info.optString("danmaku");
                     HashMap<String, String> headers = null;
                     webUserAgent = null;
                     webHeaderMap = null;
@@ -1030,7 +1041,7 @@ public class PlayActivity extends BaseActivity {
                         mController.showParse(false);
                         playUrl(playUrl + url, headers);
                     }
-//                     checkDanmu(danmaku);  # danmu removed
+                    checkDanmu(danmaku);
                 } catch (Throwable th) {
                     errorWithRetry("获取播放信息错误", true);
                 }
@@ -1040,16 +1051,16 @@ public class PlayActivity extends BaseActivity {
         }
     };
 
-//     private void checkDanmu(String danmu) {  # danmu removed
-//         danmuText = danmu;  # danmu removed
-//         mDanmuView.release();  # danmu removed
-//         mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);  # danmu removed
-//         if (TextUtils.isEmpty(danmuText)  # danmu removed
-//                 || !HawkUtils.getDanmuOpen()  # danmu removed
+    private void checkDanmu(String danmu) {
+        danmuText = danmu;
+        mDanmuView.release();
+        mDanmuView.setVisibility(TextUtils.isEmpty(danmuText) || !HawkUtils.getDanmuOpen() ? View.GONE : View.VISIBLE);
+        if (TextUtils.isEmpty(danmuText)
+                || !HawkUtils.getDanmuOpen()
                 || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isInPictureInPictureMode())) return;
-//         if (!danmuText.isEmpty()) {  # danmu removed
-//             mController.setHasDanmu(true);  # danmu removed
-//             setDanmuViewSettings(true);  # danmu removed
+        if (!danmuText.isEmpty()) {
+            mController.setHasDanmu(true);
+            setDanmuViewSettings(true);
         }
     }
 
