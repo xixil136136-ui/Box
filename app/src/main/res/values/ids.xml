@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tvAdultStatus" type="id"/>
+    <item name="tvKidsStatus" type="id"/>
+    <item name="tvCloudDrive" type="id"/>
+    <item name="tvMusicRadio" type="id"/>
+    <item name="llKidsMode" type="id"/>
+    <item name="llCloudDrive" type="id"/>
+    <item name="llMusicRadio" type="id"/>
+</resources>
