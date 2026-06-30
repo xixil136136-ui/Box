@@ -79,5 +79,11 @@ public class HawkConfig {
         public static final String ADMIN_PASSWORD = "admin_password";
     public static final String ADULT_CONTENT = "adult_content_enabled";
 
+    // Kids Mode
+    public static final String KIDS_MODE_ENABLED = "kids_mode_enabled";
+    public static final String KIDS_MODE_TIMER_MINUTES = "kids_mode_timer_minutes";
+    public static final String KIDS_MODE_MATH_LEVEL = "kids_mode_math_level"; // 1=easy, 2=medium, 3=hard
+    public static final String KIDS_MODE_REMAINING_SECONDS = "kids_mode_remaining_seconds";
+
     public static boolean hotVodDelete;
 }

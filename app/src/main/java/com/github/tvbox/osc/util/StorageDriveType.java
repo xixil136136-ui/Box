@@ -8,15 +8,15 @@ public class StorageDriveType {
         LOCAL,
         WEBDAV,
         ALISTWEB,
-        //SMB
+        SMB,
     }
 
     public static String[] getTypeNames() {
         return new String[] {
                 "本地目录",
                 "Webdav",
-                "Alist网页"
-                //"服务器消息块"
+                "Alist网页",
+                "SMB"
         };
     }
 

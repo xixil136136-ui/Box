@@ -1008,6 +1008,10 @@ public class VodController extends BaseController {
             listener.showDanmuSetting();
         });
 
+        findViewById(R.id.ll_bili_danmu).setOnClickListener(view -> {
+            listener.showBiliDanmuInput();
+        });
+
     }
 
     public void initLandscapePortraitBtnInfo() {
@@ -1111,6 +1115,8 @@ public class VodController extends BaseController {
         void openVideo();
 
         void showDanmuSetting();
+
+        void showBiliDanmuInput();
 
     }
 

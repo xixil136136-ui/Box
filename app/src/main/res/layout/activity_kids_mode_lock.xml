@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#FF1A1A2E"
+    android:padding="@dimen/vs_50">
+
+    <!-- 锁定图标 -->
+    <ImageView
+        android:layout_width="@dimen/vs_80"
+        android:layout_height="@dimen/vs_80"
+        android:layout_marginBottom="@dimen/vs_30"
+        android:src="@drawable/hm_fav"
+        android:alpha="0.5" />
+
+    <!-- 标题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="少儿模式已开启"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/ts_34"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/vs_10" />
+
+    <!-- 剩余时间 -->
+    <TextView
+        android:id="@+id/tvTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="剩余使用时间: 30:00"
+        android:textColor="#FFAAAAAA"
+        android:textSize="@dimen/ts_24"
+        android:layout_marginBottom="@dimen/vs_40" />
+
+    <!-- 分割线 -->
+    <View
+        android:layout_width="200dp"
+        android:layout_height="1dp"
+        android:background="#FF333355"
+        android:layout_marginBottom="@dimen/vs_30" />
+
+    <!-- 数学题 -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请回答以下问题以退出少儿模式"
+        android:textColor="#FFAAAAAA"
+        android:textSize="@dimen/ts_22"
+        android:layout_marginBottom="@dimen/vs_20" />
+
+    <TextView
+        android:id="@+id/tvQuestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="12 + 34 = ?"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/ts_48"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/vs_30" />
+
+    <!-- 数字键盘行1 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn1"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btn2"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btn3"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+    </LinearLayout>
+
+    <!-- 数字键盘行2 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn4"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btn5"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btn6"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="6"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+    </LinearLayout>
+
+    <!-- 数字键盘行3 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btn7"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="7"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btn8"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="8"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btn9"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="9"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+    </LinearLayout>
+
+    <!-- 数字键盘行4 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnClear"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#FFFF4444"
+            android:textSize="@dimen/ts_28" />
+
+        <TextView
+            android:id="@+id/btn0"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/ts_32" />
+
+        <TextView
+            android:id="@+id/btnOk"
+            android:layout_width="@dimen/vs_80"
+            android:layout_height="@dimen/vs_80"
+            android:layout_margin="@dimen/vs_5"
+            android:background="@drawable/button_dialog_main"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="✓"
+            android:textColor="#FF4CAF50"
+            android:textSize="@dimen/ts_32" />
+    </LinearLayout>
+
+    <!-- 答案显示 -->
+    <TextView
+        android:id="@+id/tvAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/vs_20"
+        android:text=""
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/ts_36"
+        android:minWidth="@dimen/vs_120"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/vs_10"
+        android:text=""
+        android:textSize="@dimen/ts_22"
+        android:gravity="center" />
+</LinearLayout>

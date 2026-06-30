@@ -98,6 +98,12 @@
             android:name=".ui.activity.AppsActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
+            android:name=".ui.activity.RadioActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".ui.activity.KidsModeLockActivity"
+            android:screenOrientation="sensorLandscape" />
+        <activity
             android:name=".ui.activity.SettingActivity"
             android:screenOrientation="sensorLandscape" />
             

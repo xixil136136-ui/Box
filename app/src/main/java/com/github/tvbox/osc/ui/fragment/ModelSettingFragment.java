@@ -158,6 +158,62 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
 
+        // ── 全能看：少儿模式 ──
+        TextView tvKidsStatus = findViewById(R.id.tvKidsStatus);
+        if (tvKidsStatus != null) {
+            boolean kidsEnabled = Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false);
+            tvKidsStatus.setText(kidsEnabled ? "开启" : "关闭");
+        }
+        findViewById(R.id.llKidsMode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
+                pwdDialog.setOnPasswordVerifyListener(() -> {
+                    boolean current = Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false);
+                    Hawk.put(HawkConfig.KIDS_MODE_ENABLED, !current);
+                    TextView tvStatus = findViewById(R.id.tvKidsStatus);
+                    if (tvStatus != null) {
+                        tvStatus.setText(current ? "关闭" : "开启");
+                    }
+                    Toast.makeText(mContext, current ? "少儿模式已关闭" : "少儿模式已开启，重启后生效", Toast.LENGTH_SHORT).show();
+                });
+                pwdDialog.show();
+            }
+        });
+
+        TextView tvKidsTimer = findViewById(R.id.tvKidsTimer);
+        if (tvKidsTimer != null) {
+            int minutes = Hawk.get(HawkConfig.KIDS_MODE_TIMER_MINUTES, 30);
+            tvKidsTimer.setText(minutes + "分钟");
+        }
+        findViewById(R.id.llKidsTimer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
+                pwdDialog.setOnPasswordVerifyListener(() -> {
+                    int[] timerOptions = {15, 30, 45, 60, 90, 120};
+                    int current = Hawk.get(HawkConfig.KIDS_MODE_TIMER_MINUTES, 30);
+                    int nextIdx = 0;
+                    for (int i = 0; i < timerOptions.length; i++) {
+                        if (timerOptions[i] == current) {
+                            nextIdx = (i + 1) % timerOptions.length;
+                            break;
+                        }
+                    }
+                    int newTime = timerOptions[nextIdx];
+                    Hawk.put(HawkConfig.KIDS_MODE_TIMER_MINUTES, newTime);
+                    TextView tvTimer = findViewById(R.id.tvKidsTimer);
+                    if (tvTimer != null) {
+                        tvTimer.setText(newTime + "分钟");
+                    }
+                    Toast.makeText(mContext, "少儿模式时限已设为" + newTime + "分钟", Toast.LENGTH_SHORT).show();
+                });
+                pwdDialog.show();
+            }
+        });
+
         tvDebugOpen = findViewById(R.id.tvDebugOpen);
         tvDebugOpen.setText(Hawk.get(HawkConfig.DEBUG_OPEN, false) ? "开启" : "关闭");
         tvApi = findViewById(R.id.tvApi);

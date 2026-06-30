@@ -28,6 +28,7 @@ import com.github.tvbox.osc.ui.adapter.DriveAdapter;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
 import com.github.tvbox.osc.ui.dialog.AlistDriveDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
+import com.github.tvbox.osc.ui.dialog.SMBDialog;
 import com.github.tvbox.osc.ui.dialog.WebdavDialog;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
@@ -36,6 +37,7 @@ import com.github.tvbox.osc.util.StringUtils;
 import com.github.tvbox.osc.viewmodel.drive.AbstractDriveViewModel;
 import com.github.tvbox.osc.viewmodel.drive.AlistDriveViewModel;
 import com.github.tvbox.osc.viewmodel.drive.LocalDriveViewModel;
+import com.github.tvbox.osc.viewmodel.drive.SMBDriveViewModel;
 import com.github.tvbox.osc.viewmodel.drive.WebDAVDriveViewModel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -151,6 +153,9 @@ public class DriveActivity extends BaseActivity {
                         } else if (value == StorageDriveType.TYPE.ALISTWEB) {
                             openAlistDriveDialog(null);
                             dialog.dismiss();
+                        } else if (value == StorageDriveType.TYPE.SMB) {
+                            openSMBDialog(null);
+                            dialog.dismiss();
                         }
                     }
 
@@ -210,6 +215,8 @@ public class DriveActivity extends BaseActivity {
                         viewModel = new WebDAVDriveViewModel();
                     } else if (selectedItem.getDriveType() == StorageDriveType.TYPE.ALISTWEB) {
                         viewModel = new AlistDriveViewModel();
+                    } else if (selectedItem.getDriveType() == StorageDriveType.TYPE.SMB) {
+                        viewModel = new SMBDriveViewModel();
                     }
                     viewModel.setCurrentDrive(selectedItem);
                     if (!selectedItem.isFile) {
@@ -228,6 +235,10 @@ public class DriveActivity extends BaseActivity {
                         if (currentDrive.getDriveType() == StorageDriveType.TYPE.LOCAL)
                             playFile(currentDrive.name + selectedItem.getAccessingPathStr() + selectedItem.name);
                         else if (currentDrive.getDriveType() == StorageDriveType.TYPE.WEBDAV) {
+                            JsonObject config = currentDrive.getConfig();
+                            String targetPath = selectedItem.getAccessingPathStr() + selectedItem.name;
+                            playFile(config.get("url").getAsString() + targetPath);
+                        } else if (currentDrive.getDriveType() == StorageDriveType.TYPE.SMB) {
                             JsonObject config = currentDrive.getConfig();
                             String targetPath = selectedItem.getAccessingPathStr() + selectedItem.name;
                             playFile(config.get("url").getAsString() + targetPath);
@@ -376,6 +387,18 @@ public class DriveActivity extends BaseActivity {
 
     private void openAlistDriveDialog(StorageDrive drive) {
         AlistDriveDialog dialog = new AlistDriveDialog(mContext, drive);
+        EventBus.getDefault().register(dialog);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                EventBus.getDefault().unregister(dialog);
+            }
+        });
+        dialog.show();
+    }
+
+    private void openSMBDialog(StorageDrive drive) {
+        SMBDialog dialog = new SMBDialog(mContext, drive);
         EventBus.getDefault().register(dialog);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

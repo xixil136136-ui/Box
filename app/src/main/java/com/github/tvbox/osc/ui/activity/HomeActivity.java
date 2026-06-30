@@ -684,6 +684,12 @@ public class HomeActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
+        // ── 少儿模式检测 ──
+        if (Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false)) {
+            Intent kidsIntent = new Intent(HomeActivity.this, KidsModeLockActivity.class);
+            startActivity(kidsIntent);
+        }
+
         // takagen99 : Switch to show / hide source title
         SourceBean home = ApiConfig.get().getHomeSourceBean();
         if (Hawk.get(HawkConfig.HOME_SHOW_SOURCE, false)) {
