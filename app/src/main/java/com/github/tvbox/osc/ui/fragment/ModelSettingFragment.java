@@ -1,6 +1,7 @@
 package com.github.tvbox.osc.ui.fragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,6 @@ import com.github.tvbox.osc.ui.dialog.MediaSettingDialog;
 import com.github.tvbox.osc.ui.dialog.ResetDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.XWalkInitDialog;
-import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.HistoryHelper;
@@ -42,6 +42,9 @@ import com.lzy.okgo.callback.FileCallback;
 import com.lzy.okgo.model.Progress;
 import com.lzy.okgo.model.Response;
 import com.orhanobut.hawk.Hawk;
+import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
+import com.github.tvbox.osc.util.ContentGuardInterceptor;
+import com.github.tvbox.osc.util.DeviceUtil;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 
@@ -106,10 +109,10 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
 
         // ── 全能看：内容管理 ──
-        TextView tvAdultStatus2 = findViewById(R.id.tvAdultStatus);
-        if (tvAdultStatus2 != null) {
+        TextView tvAdultStatus = findViewById(R.id.tvAdultStatus);
+        if (tvAdultStatus != null) {
             boolean adultEnabled = Hawk.get(HawkConfig.ADULT_CONTENT, false);
-            tvAdultStatus2.setText(adultEnabled ? "显示" : "隐藏");
+            tvAdultStatus.setText(adultEnabled ? "显示" : "隐藏");
         }
         findViewById(R.id.llAdultManage).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,79 +143,48 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 verifyDialog.show();
             }
         });
-
+        // ── 全能看：少儿模式 ──
+        final TextView tvKidsStatus = findViewById(R.id.tvKidsStatus);
+        if (tvKidsStatus != null) {
+            tvKidsStatus.setText(Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false) ? "开启" : "关闭");
+        }
+        findViewById(R.id.llKidsMode).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                if (Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false)) {
+                    ContentGuardInterceptor.exitKidsMode(mActivity, () -> {
+                        if (tvKidsStatus != null) tvKidsStatus.setText("关闭");
+                    });
+                } else {
+                    ContentGuardInterceptor.enterKidsMode(mActivity, () -> {
+                        if (tvKidsStatus != null) tvKidsStatus.setText("开启");
+                    });
+                }
+            }
+        });
         // ── 全能看：云盘配置 ──
         findViewById(R.id.llCloudDrive).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                new android.app.AlertDialog.Builder(mActivity)
                     .setTitle("☁️ 云盘/NAS配置")
                     .setMessage("在JSON影视源中配置WebDAV地址即可挂载云盘。\n支持: 阿里云盘/夸克网盘/群晖NAS\n\n配置示例:\next: \"webdav:http://admin:密码@192.168.1.100:5005/视频\"")
                     .setPositiveButton("知道了", null)
                     .show();
             }
         });
-
         // ── 全能看：音乐电台 ──
         findViewById(R.id.llMusicRadio).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                new android.app.AlertDialog.Builder(mActivity)
                     .setTitle("🎵 音乐电台")
                     .setMessage("在JSON影视源中添加音乐站点即可收听。\n\n支持:\n- 网络电台 m3u\n- B站音乐源\n\n配置示例:\next: \"m3u:https://...radio.m3u\"")
                     .setPositiveButton("知道了", null)
                     .show();
-            }
-        });
-
-
-        // ── 全能看：少儿模式 ──
-        TextView tvKidsStatus = findViewById(R.id.tvKidsStatus);
-        if (tvKidsStatus != null) {
-            boolean kidsEnabled = Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false);
-            tvKidsStatus.setText(kidsEnabled ? "开启" : "关闭");
-        }
-        findViewById(R.id.llKidsMode).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FastClickCheckUtil.check(view);
-                AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
-                pwdDialog.setOnPasswordVerifyListener(() -> {
-                    boolean current = Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false);
-                    Hawk.put(HawkConfig.KIDS_MODE_ENABLED, !current);
-                    TextView tvStatus = findViewById(R.id.tvKidsStatus);
-                    if (tvStatus != null) {
-                        tvStatus.setText(current ? "关闭" : "开启");
-                    }
-                    Toast.makeText(mContext, current ? "少儿模式已关闭" : "少儿模式已开启，重启后生效", Toast.LENGTH_SHORT).show();
-                });
-                pwdDialog.show();
-            }
-        });
-
-        TextView tvKidsTimer = findViewById(R.id.tvKidsTimer);
-        if (tvKidsTimer != null) {
-            int minutes = Hawk.get(HawkConfig.KIDS_MODE_TIMER_MINUTES, 30);
-            tvKidsTimer.setText(minutes + "分钟");
-        }
-        findViewById(R.id.llKidsTimer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FastClickCheckUtil.check(view);
-                AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false);
-                pwdDialog.setOnPasswordVerifyListener(() -> {
-                    int[] timerOptions = {15, 30, 45, 60, 90, 120};
-                    int current = Hawk.get(HawkConfig.KIDS_MODE_TIMER_MINUTES, 30);
-                    int nextIdx = 0;
-                    for (int i = 0; i < timerOptions.length; i++) {
-                        if (timerOptions[i] == current) {
-                            nextIdx = (i + 1) % timerOptions.length;
-                            break;
-                        }
-                    }
-                    int newTime = timerOptions[nextIdx];
-                    Hawk.put(HawkConfig.KIDS_MODE_TIMER_MINUTES, newTime);
-                    TextView tvTimer = findViewById(R.id.tvKidsTimer);
-                    if (tvTimer != null) {
-                        tvTimer.setText(newTime + "分钟");
-                    }
-                    Toast.makeText(mContext, "少儿模式时限已设为" + newTime + "分钟", Toast.LENGTH_SHORT).show();
-                });
-                pwdDialog.show();
             }
         });
 
@@ -597,6 +569,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
+
 
         // Select DECODER Type --------------------------------------------
         //更改选择是否用硬解码还是软解码 改成播放器设置
