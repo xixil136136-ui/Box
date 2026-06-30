@@ -11,7 +11,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'com.quanneng.kan'
+        applicationId 'com.github.tvbox.osc.tk'
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.".concat(buildTime())
@@ -57,7 +57,7 @@ android {
 
         hisense {
             //海信的
-            applicationId 'com.quanneng.kan.hisense'
+            applicationId 'com.github.hisense.osc.tk'
             dimension = "brand"
         }
         normal {
@@ -76,7 +76,7 @@ android {
         variant.outputs.configureEach { output ->
             def flavorNames = variant.productFlavors.collect { it.name == "normal" ? "java" : it.name }.join('-')
             // 构建自定义文件名
-            def fileName = "quannengkan_${variant.buildType.name}-${flavorNames}.apk"
+            def fileName = "TVBox_${variant.buildType.name}-${flavorNames}.apk"
             outputFileName = fileName
         }
     }
@@ -156,8 +156,8 @@ dependencies {
 
 
 
-
-
+    implementation "com.aliyun.sdk.android:AliyunPlayer:5.5.2.0-full"
+    implementation 'com.alivc.conan:AlivcConan:0.9.5'
     implementation 'xyz.doikki.android.dkplayer:dkplayer-ui:3.3.7'
     implementation 'xyz.doikki.android.dkplayer:videocache:3.3.7'
 
@@ -177,7 +177,7 @@ dependencies {
     implementation 'io.github.inflationx:calligraphy3:3.1.1'
     implementation 'com.yanzhenjie.andserver:api:2.1.12'
     kapt 'com.yanzhenjie.andserver:processor:2.1.12'
-    // implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25' - 暂不可用，不影响核心播放功能
+    implementation 'com.github.ctiao:DanmakuFlameMaster:0.9.25'
     implementation('org.simpleframework:simple-xml:2.7.1') {
         exclude group: 'stax', module: 'stax-api'
         exclude group: 'xpp3', module: 'xpp3'
