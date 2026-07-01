@@ -1035,7 +1035,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
 
     // ── 全能看：安全获取资源ID ──
     private int resId(String name) {
-        return getResources().getIdentifier(name, "id", mActivity.getPackageName());
+        return getResources().getIdentifier(name, "id", getActivity().getPackageName());
     }
 
 }
