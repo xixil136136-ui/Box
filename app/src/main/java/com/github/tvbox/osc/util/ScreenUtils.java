@@ -7,6 +7,10 @@ import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.app.UiModeManager;
+import android.content.Context;
+import android.content.res.Configuration;
+import android.util.DisplayMetrics;
 
 /**
  * 全屏通用工具类
@@ -143,6 +147,24 @@ public class ScreenUtils {
     private void applyKeepScreenOn() {
         activity.getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+
+    /** 判断当前设备是否是电视/盒子 */
+    public static boolean isTv(Context context) {
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+        return uiModeManager != null
+                && uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
+    }
+
+    /** 获取屏幕对角线尺寸（英寸） */
+    public static double getSqrt(Activity activity) {
+        WindowManager wm = activity.getWindowManager();
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getRealMetrics(dm);
+        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
+        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
+        return Math.sqrt(x + y);
     }
 
     public void releaseKeepScreenOn() {
