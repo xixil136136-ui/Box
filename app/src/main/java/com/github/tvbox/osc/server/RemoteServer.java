@@ -13,6 +13,7 @@ import com.github.tvbox.osc.api.ApiConfig;
 import com.github.tvbox.osc.event.ServerEvent;
 import com.github.tvbox.osc.util.FileUtils;
 import com.github.tvbox.osc.dlna.DLNAManager;
+import com.github.tvbox.osc.dlna.DLNAManager;
 import com.github.tvbox.osc.util.OkGoHelper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -175,7 +176,16 @@ public class RemoteServer extends NanoHTTPD {
                             } else {
                                 return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, NanoHTTPD.MIME_PLAINTEXT, fileList(root, f));
                             }
-                        } else {
+                        
+                } else if (fileName.equals("/dlna/device.xml")) {
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.getDeviceDescriptionXml());
+                } else if (fileName.equals("/dlna/avt/scpd.xml")) {
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.getAvtScpdXml());
+                } else if (fileName.equals("/dlna/cm/scpd.xml")) {
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.getCmScpdXml());
+                } else if (fileName.equals("/dlna/rc/scpd.xml")) {
+                    return NanoHTTPD.newFixedLengthResponse(Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.getRcScpdXml());
+} else {
                             return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.INTERNAL_ERROR, NanoHTTPD.MIME_PLAINTEXT, "File " + file + " not found!");
                         }
                     } catch (Throwable th) {
