@@ -113,12 +113,12 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
 
         // ── 全能看：内容管理 ──
-        TextView tvAdultStatus = findViewById(resId("tvAdultStatus"));
+        TextView tvAdultStatus = findViewById(R.id.tvAdultStatus);
         if (tvAdultStatus != null) {
             boolean adultEnabled = Hawk.get(HawkConfig.ADULT_CONTENT, false);
             tvAdultStatus.setText(adultEnabled ? "显示" : "隐藏");
         }
-        findViewById(resId("llAdultManage")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llAdultManage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -126,7 +126,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 pwdDialog.setOnPasswordVerifyListener(() -> {
                     boolean current = Hawk.get(HawkConfig.ADULT_CONTENT, false);
                     Hawk.put(HawkConfig.ADULT_CONTENT, !current);
-                    TextView tvStatus = findViewById(resId("tvAdultStatus"));
+                    TextView tvStatus = findViewById(R.id.tvAdultStatus);
                     if (tvStatus != null) {
                         tvStatus.setText(current ? "隐藏" : "显示");
                     }
@@ -135,7 +135,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 pwdDialog.show();
             }
         });
-        findViewById(resId("llAdultChangePwd")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llAdultChangePwd).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -148,11 +148,11 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
         // ── 全能看：少儿模式 ──
-        final TextView tvKidsStatus = findViewById(resId("tvKidsStatus"));
+        final TextView tvKidsStatus = findViewById(R.id.tvKidsStatus);
         if (tvKidsStatus != null) {
             tvKidsStatus.setText(Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false) ? "开启" : "关闭");
         }
-        findViewById(resId("llKidsMode")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llKidsMode).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -169,7 +169,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
         });
         
         // ── 全能看：卡密激活 ──
-        findViewById(resId("llActivate")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llActivate).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -200,7 +200,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                             @Override
                             public void onSuccess(String msg, int vl) {
                                 if (getActivity() != null) getActivity().runOnUiThread(() -> {
-                                    TextView tv = findViewById(resId("tvActivateStatus"));
+                                    TextView tv = findViewById(R.id.tvActivateStatus);
                                     if (tv != null) tv.setText("已激活");
                                     Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
                                 });
@@ -217,7 +217,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
         });
 
         // ── 全能看：自定义源管理 ──
-        findViewById(resId("llSourceManager")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llSourceManager).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -231,7 +231,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
         });
 
         // ── 全能看：云盘配置 ──
-        findViewById(resId("llCloudDrive")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llCloudDrive).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -243,7 +243,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         });
         // ── 全能看：音乐电台 ──
-        findViewById(resId("llMusicRadio")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.llMusicRadio).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FastClickCheckUtil.check(view);
@@ -838,7 +838,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-        findViewById(resId("showFastSearch")).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.showFastSearch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FastClickCheckUtil.check(v);
@@ -1034,8 +1034,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
     }
 
     // ── 全能看：安全获取资源ID ──
-    private int resId(String name) {
-        return getResources().getIdentifier(name, "id", getActivity().getPackageName());
-    }
+
 
 }
