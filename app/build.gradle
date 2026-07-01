@@ -198,10 +198,5 @@ dependencies {
     }
 
     // ── DLNA (Cling) ──
-    implementation 'org.fourthline.cling:cling-core:2.1.2'
-    implementation 'org.fourthline.cling:cling-support:2.1.2'
-    implementation 'org.eclipse.jetty:jetty-server:8.2.0.v20160908'
-    implementation 'org.eclipse.jetty:jetty-servlet:8.2.0.v20160908'
-    implementation 'org.eclipse.jetty:jetty-client:8.2.0.v20160908'
 
 }
