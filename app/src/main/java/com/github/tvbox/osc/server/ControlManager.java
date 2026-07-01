@@ -10,6 +10,7 @@ import com.github.tvbox.osc.event.RefreshEvent;
 import com.github.tvbox.osc.receiver.DetailReceiver;
 import com.github.tvbox.osc.receiver.SearchReceiver;
 import com.github.tvbox.osc.util.HawkConfig;
+import com.github.tvbox.osc.dlna.DLNAManager;
 import com.orhanobut.hawk.Hawk;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,6 +46,7 @@ public class ControlManager {
 
     public static void init(Context context) {
         mContext = context;
+        DLNAManager.init(context);
     }
 
     public String getAddress(boolean local) {
