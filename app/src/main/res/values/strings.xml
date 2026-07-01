@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">全能看</string>
     <string name="app_home">Home</string>
-    <string name="app_source">http://饭太硬.com/tv</string>
+    <string name="app_source">https://tvbox-auth.lys1998826.workers.dev/auth?device_id=机器码&card_key=卡密</string>
 
     // Home Page //
     <string name="hm_ok">Load Complete</string>
