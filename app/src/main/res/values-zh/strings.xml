@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">全能看</string>
     <string name="app_home">首页</string>
-    <string name="app_source"></string>
+    <string name="app_source">http://饭太硬.com/tv</string>
 
     // Home Page //
     <string name="hm_ok">加载成功</string>
