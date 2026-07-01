@@ -7,7 +7,6 @@ import android.animation.AnimatorSet;
 import android.animation.IntEvaluator;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -951,7 +950,7 @@ public class HomeActivity extends BaseActivity {
 
     /** 弹出源配置对话框 */
     private void showSourceConfigDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
         builder.setTitle("📦 配置视频源");
         builder.setMessage("首次使用，请输入视频源地址。\n\n推荐源:\nhttp://肥猫.com/\nhttp://饭太硬.com/tv\nhttp://ok321.top/tv\n\n也可以后续在设置中修改");
         
