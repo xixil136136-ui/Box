@@ -3,6 +3,7 @@ package com.github.tvbox.osc.ui.activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ import java.util.List;
 /**
  * @author pj567
  * @date :2020/12/23
- * @description:
+ * @description: 设置Activity - 管理应用全局配置
  */
 public class SettingActivity extends BaseActivity {
     private TvRecyclerView mGridView;
@@ -43,13 +44,13 @@ public class SettingActivity extends BaseActivity {
     private boolean sortChange = false;
     private int defaultSelected = 0;
     private int sortFocused = 0;
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private String homeSourceKey;
     private String currentApi;
     private String currentLive;
     private int homeRec;
     private int dnsOpt;
-    private EditText inputUrl; // 添加输入框
+    private EditText inputUrl;
 
     @Override
     protected int getLayoutResID() {
@@ -65,6 +66,15 @@ public class SettingActivity extends BaseActivity {
     private void initView() {
         mGridView = findViewById(R.id.mGridView);
         mViewPager = findViewById(R.id.mViewPager);
+        
+        // 初始化输入框（如果布局中有的话）
+        try {
+            inputUrl = findViewById(R.id.inputUrl);
+        } catch (Exception e) {
+            // 如果布局中没有这个ID，继续正常运行
+            inputUrl = null;
+        }
+        
         sortAdapter = new SettingMenuAdapter();
         mGridView.setAdapter(sortAdapter);
         mGridView.setLayoutManager(new V7LinearLayoutManager(this.mContext, 1, false));
@@ -88,7 +98,9 @@ public class SettingActivity extends BaseActivity {
             public void onItemPreSelected(TvRecyclerView parent, View itemView, int position) {
                 if (itemView != null) {
                     TextView tvName = itemView.findViewById(R.id.tvName);
-                    tvName.setTextColor(getResources().getColor(R.color.color_FFFFFF_70));
+                    if (tvName != null) {
+                        tvName.setTextColor(getResources().getColor(R.color.color_FFFFFF_70));
+                    }
                 }
             }
 
@@ -98,23 +110,36 @@ public class SettingActivity extends BaseActivity {
                     sortChange = true;
                     sortFocused = position;
                     TextView tvName = itemView.findViewById(R.id.tvName);
-                    tvName.setTextColor(Color.WHITE);
+                    if (tvName != null) {
+                        tvName.setTextColor(Color.WHITE);
+                    }
                 }
             }
 
             @Override
             public void onItemClick(TvRecyclerView parent, View itemView, int position) {
-
+                // 项目点击处理
             }
         });
     }
 
     private void initData() {
-        currentApi = Hawk.get(HawkConfig.API_URL, "");
-        currentLive = Hawk.get(HawkConfig.LIVE_URL, "");
-        homeSourceKey = ApiConfig.get().getHomeSourceBean().getKey();
-        homeRec = Hawk.get(HawkConfig.HOME_REC, 0);
-        dnsOpt = Hawk.get(HawkConfig.DOH_URL, 0);
+        try {
+            currentApi = Hawk.get(HawkConfig.API_URL, "");
+            currentLive = Hawk.get(HawkConfig.LIVE_URL, "");
+            homeSourceKey = ApiConfig.get().getHomeSourceBean() != null ? 
+                           ApiConfig.get().getHomeSourceBean().getKey() : "";
+            homeRec = Hawk.get(HawkConfig.HOME_REC, 0);
+            dnsOpt = Hawk.get(HawkConfig.DOH_URL, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+            currentApi = "";
+            currentLive = "";
+            homeSourceKey = "";
+            homeRec = 0;
+            dnsOpt = 0;
+        }
+        
         List<String> sortList = new ArrayList<>();
         sortList.add("设置其他");
         sortAdapter.setNewData(sortList);
@@ -147,7 +172,6 @@ public class SettingActivity extends BaseActivity {
             devMode = "";
         }
     };
-
 
     public interface DevModeCallback {
         void onChange();
@@ -182,6 +206,7 @@ public class SettingActivity extends BaseActivity {
 
     /**
      * 保存配置URL的方法
+     * 功能：验证输入 → 持久化存储 → 重新加载配置 → 关闭页面
      */
     public void saveConfigUrl() {
         // 1. 获取输入框文本并进行严谨的 null 与去空格校验
@@ -190,33 +215,72 @@ public class SettingActivity extends BaseActivity {
 
         if (url.isEmpty()) {
             Toast.makeText(this, "配置地址不能为空", Toast.LENGTH_SHORT).show();
-        } else {
+            return;
+        }
+        
+        // 验证URL格式
+        if (!isValidUrl(url)) {
+            Toast.makeText(this, "配置地址格式不正确", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            // 2. 强行持久化写入 Hawk数据库
+            Hawk.put(ApiConfig.KEY_DIY_API, url);
+            Toast.makeText(this, "配置保存成功", Toast.LENGTH_SHORT).show();
+            
+            // 3. 触发影视源重新刮削加载（通知全局配置更新）
             try {
-                // 2. 强行持久化写入 Hawk2.xml
-                Hawk.put(ApiConfig.KEY_DIY_API, url);
-                Toast.makeText(this, "配置保存成功", Toast.LENGTH_SHORT).show();
-                
-                // 3. 触发影视源重新刮削加载（通知全局配置更新）
-                ApiConfig.get().loadConfig(false, null); 
-                
-                // 4. 正常关闭当前设置页面
-                finish();
+                ApiConfig.get().loadConfig(false, null);
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(this, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                // 配置加载失败不应该中断流程
             }
+            
+            // 4. 延迟关闭当前设置页面，给用户反馈时间
+            mHandler.postDelayed(this::finish, 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 验证URL格式是否有效
+     * @param url 待验证的URL
+     * @return true if valid, false otherwise
+     */
+    private boolean isValidUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return false;
+        }
+        return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("file://");
+    }
+
+    /**
+     * 清空所有配置
+     */
+    public void clearAllConfig() {
+        try {
+            Hawk.delete(ApiConfig.KEY_DIY_API);
+            Toast.makeText(this, "配置已清空", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "清空配置失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onBackPressed() {
-        if ((homeSourceKey != null && !homeSourceKey.equals(Hawk.get(HawkConfig.HOME_API, ""))) ||
-                !currentApi.equals(Hawk.get(HawkConfig.API_URL, "")) || !currentLive.equals(Hawk.get(HawkConfig.LIVE_URL, "")) ||
+        if ((homeSourceKey != null && !homeSourceKey.isEmpty() && !homeSourceKey.equals(Hawk.get(HawkConfig.HOME_API, ""))) ||
+                !currentApi.equals(Hawk.get(HawkConfig.API_URL, "")) || 
+                !currentLive.equals(Hawk.get(HawkConfig.LIVE_URL, "")) ||
                 homeRec != Hawk.get(HawkConfig.HOME_REC, 0) ||
                 dnsOpt != Hawk.get(HawkConfig.DOH_URL, 0)) {
             AppManager.getInstance().finishAllActivity();
             // 修复：将 & 改为 && (逻辑与)
-            if (currentApi.equals(Hawk.get(HawkConfig.API_URL, "")) && (currentLive.equals(Hawk.get(HawkConfig.LIVE_URL, "")))) {
+            if (currentApi.equals(Hawk.get(HawkConfig.API_URL, "")) && 
+                (currentLive.equals(Hawk.get(HawkConfig.LIVE_URL, "")))) {
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("useCache", true);
                 jumpActivity(HomeActivity.class, bundle);
@@ -225,6 +289,15 @@ public class SettingActivity extends BaseActivity {
             }
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // 清理Handler回调，防止内存泄漏
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
         }
     }
 }
