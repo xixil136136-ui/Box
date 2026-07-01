@@ -241,7 +241,7 @@ public class RemoteServer extends NanoHTTPD {
                 try {
                     Map < String, String > params = session.getParms();
                     if (fileName.equals("/dlna/avt/control")) {
-                        Map<String, String> params = session.getParms();
+                        // params from outer scope
                         String body = params != null ? params.get("body") : "";
                         if (body != null && body.contains("Play")) {
                             return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.handleAvtPlayControl(body));
