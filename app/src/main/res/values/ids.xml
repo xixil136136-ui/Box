@@ -15,4 +15,6 @@
     <item name="tvMusicRadio" type="id"/>
     <item name="llKidsTimer" type="id"/>
     <item name="tvKidsTimer" type="id"/>
+    <item name="list" type="id"/>
+    <item name="cl_root" type="id"/>
 </resources>
