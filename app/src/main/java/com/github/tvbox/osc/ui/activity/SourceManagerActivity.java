@@ -55,6 +55,7 @@ public class SourceManagerActivity extends BaseActivity {
         findViewById(R.id.btnVideo).setOnClickListener(v -> filterSources(1));
         findViewById(R.id.btnLive).setOnClickListener(v -> filterSources(2));
         findViewById(R.id.btnGame).setOnClickListener(v -> filterSources(3));
+        findViewById(R.id.btnRadio).setOnClickListener(v -> filterSources(4));
 
         // 添加源
         findViewById(R.id.btnAddSource).setOnClickListener(v -> showAddDialog());
@@ -73,11 +74,11 @@ public class SourceManagerActivity extends BaseActivity {
         }
         adapter.setData(filtered);
         ((TextView)findViewById(R.id.tvFilterTitle)).setText(
-                type == 0 ? "全部源" : type == 1 ? "🎬 视频点播源" : type == 2 ? "📺 IPTV直播源" : "🎮 游戏模拟源");
+                type == 0 ? "全部源" : type == 1 ? "🎬 视频点播源" : type == 2 ? "📺 IPTV直播源" : type == 3 ? "🎮 游戏模拟源" : "🎵 音乐电台源");
     }
 
     private void showAddDialog() {
-        String[] types = {"🎬 视频点播源", "📺 IPTV直播源", "🎮 游戏模拟源"};
+        String[] types = {"🎬 视频点播源", "📺 IPTV直播源", "🎮 游戏模拟源", "🎵 音乐电台源"};
         new AlertDialog.Builder(this)
                 .setTitle("选择源类型")
                 .setItems(types, (dialog, which) -> showEditDialog(null, which + 1))
@@ -107,7 +108,7 @@ public class SourceManagerActivity extends BaseActivity {
 
         // 仅视频源显示API字段
         final EditText etApi;
-        if (sourceType == 1) {
+        if (sourceType == 1 || sourceType == 4) {
             etApi = new EditText(this);
             etApi.setHint("API地址（可选，如: https://example.com/api.php/provide/vod）");
             etApi.setText(isEdit ? existing.api : "");
@@ -152,6 +153,7 @@ public class SourceManagerActivity extends BaseActivity {
             case 1: return "JSON接口地址（如: http://饭太硬.com/tv）";
             case 2: return "M3U直播地址（如: https://iptv-org.github.io/iptv/index.m3u）";
             case 3: return "ROM下载地址或游戏源接口";
+            case 4: return "M3U电台地址（如: https://...radio.m3u）";
             default: return "源地址";
         }
     }
@@ -161,6 +163,7 @@ public class SourceManagerActivity extends BaseActivity {
             case 1: return "🎬 视频点播源";
             case 2: return "📺 IPTV直播源";
             case 3: return "🎮 游戏模拟源";
+            case 4: return "🎵 音乐电台源";
             default: return "源";
         }
     }
@@ -241,7 +244,7 @@ public class SourceManagerActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(ViewHolder h, int pos) {
             SourceItem item = data.get(pos);
-            String prefix = item.type == 1 ? "🎬 " : item.type == 2 ? "📺 " : "🎮 ";
+            String prefix = item.type == 1 ? "🎬 " : item.type == 2 ? "📺 " : item.type == 3 ? "🎮 " : "🎵 ";
             h.name.setText(prefix + item.name);
             h.url.setText(item.url);
             h.itemView.setOnClickListener(v -> showEditDialog(item, 0));
