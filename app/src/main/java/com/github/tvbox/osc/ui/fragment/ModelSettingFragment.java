@@ -190,7 +190,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         long expire = Hawk.get("card_auth_expire", 0L);
                         if (!savedCard.isEmpty() && expire > System.currentTimeMillis()) {
                             int days = (int)((expire - System.currentTimeMillis()) / 86400000L);
-                            new AlertDialog.Builder(mActivity)
+                            new android.app.AlertDialog.Builder(mActivity)
                                 .setTitle("✅ 已激活").setMessage("卡密: " + savedCard + "\n剩余: " + Math.max(1, days) + " 天")
                                 .setPositiveButton("确定", null).show();
                             return;
@@ -200,7 +200,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         LinearLayout ll = new LinearLayout(mActivity);
                         ll.setPadding(40, 0, 40, 0);
                         ll.addView(et);
-                        new AlertDialog.Builder(mActivity)
+                        new android.app.AlertDialog.Builder(mActivity)
                             .setTitle("🔑 卡密激活").setMessage("输入激活码，解锁全部功能")
                             .setView(ll)
                             .setPositiveButton("激活", (dialog, which) -> {
@@ -251,7 +251,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     @Override
                     public void onClick(View view) {
                         FastClickCheckUtil.check(view);
-                        new AlertDialog.Builder(mActivity).setTitle("☁️ 云盘/NAS配置")
+                        new android.app.AlertDialog.Builder(mActivity).setTitle("☁️ 云盘/NAS配置")
                             .setMessage("在JSON影视源中配置WebDAV地址即可挂载云盘。\n支持: 阿里云盘/夸克网盘/群晖NAS")
                             .setPositiveButton("知道了", null).show();
                     }
@@ -263,7 +263,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     @Override
                     public void onClick(View view) {
                         FastClickCheckUtil.check(view);
-                        new AlertDialog.Builder(mActivity).setTitle("🎵 音乐电台")
+                        new android.app.AlertDialog.Builder(mActivity).setTitle("🎵 音乐电台")
                             .setMessage("在JSON影视源中添加音乐站点即可收听。\n支持: M3U电台/B站音乐源")
                             .setPositiveButton("知道了", null).show();
                     }
@@ -936,7 +936,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         long expire = Hawk.get("card_auth_expire", 0L);
                         if (!savedCard.isEmpty() && expire > System.currentTimeMillis()) {
                             int days = (int)((expire - System.currentTimeMillis()) / 86400000L);
-                            new AlertDialog.Builder(mActivity)
+                            new android.app.AlertDialog.Builder(mActivity)
                                 .setTitle("✅ 已激活").setMessage("卡密: " + savedCard + "\n剩余: " + Math.max(1, days) + " 天")
                                 .setPositiveButton("确定", null).show();
                             return;
@@ -946,7 +946,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         LinearLayout ll = new LinearLayout(mActivity);
                         ll.setPadding(40, 0, 40, 0);
                         ll.addView(et);
-                        new AlertDialog.Builder(mActivity)
+                        new android.app.AlertDialog.Builder(mActivity)
                             .setTitle("🔑 卡密激活").setMessage("输入激活码，解锁全部功能")
                             .setView(ll)
                             .setPositiveButton("激活", (dialog, which) -> {
@@ -997,7 +997,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     @Override
                     public void onClick(View view) {
                         FastClickCheckUtil.check(view);
-                        new AlertDialog.Builder(mActivity).setTitle("☁️ 云盘/NAS配置")
+                        new android.app.AlertDialog.Builder(mActivity).setTitle("☁️ 云盘/NAS配置")
                             .setMessage("在JSON影视源中配置WebDAV地址即可挂载云盘。\n支持: 阿里云盘/夸克网盘/群晖NAS")
                             .setPositiveButton("知道了", null).show();
                     }
@@ -1009,7 +1009,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     @Override
                     public void onClick(View view) {
                         FastClickCheckUtil.check(view);
-                        new AlertDialog.Builder(mActivity).setTitle("🎵 音乐电台")
+                        new android.app.AlertDialog.Builder(mActivity).setTitle("🎵 音乐电台")
                             .setMessage("在JSON影视源中添加音乐站点即可收听。\n支持: M3U电台/B站音乐源")
                             .setPositiveButton("知道了", null).show();
                     }
