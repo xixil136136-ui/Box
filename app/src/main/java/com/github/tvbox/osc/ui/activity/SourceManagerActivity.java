@@ -55,7 +55,7 @@ public class SourceManagerActivity extends BaseActivity {
         findViewById(R.id.btnVideo).setOnClickListener(v -> filterSources(1));
         findViewById(R.id.btnLive).setOnClickListener(v -> filterSources(2));
         findViewById(R.id.btnGame).setOnClickListener(v -> filterSources(3));
-        findViewById(R.id.btnRadio).setOnClickListener(v -> filterSources(4));
+        
 
         // 添加源
         findViewById(R.id.btnAddSource).setOnClickListener(v -> showAddDialog());
