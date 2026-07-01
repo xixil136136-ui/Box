@@ -46,6 +46,7 @@ import com.github.tvbox.osc.ui.dialog.AdminPasswordDialog;
 import com.github.tvbox.osc.ui.activity.SourceManagerActivity;
 import com.github.tvbox.osc.util.ContentGuardInterceptor;
 import com.github.tvbox.osc.util.DeviceUtil;
+import com.github.tvbox.osc.util.CardAuthInterceptor;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7GridLayoutManager;
 
@@ -164,6 +165,66 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 }
             }
         });
+        
+        // ── 全能看：卡密激活 ──
+        findViewById(resId("llActivate")).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                String savedCard = Hawk.get("card_auth_key", "");
+                long expire = Hawk.get("card_auth_expire", 0L);
+                if (!savedCard.isEmpty() && expire > System.currentTimeMillis()) {
+                    int days = (int)((expire - System.currentTimeMillis()) / 86400000L);
+                    new android.app.AlertDialog.Builder(mActivity)
+                        .setTitle("✅ 已激活")
+                        .setMessage("卡密: " + savedCard + "\n剩余: " + Math.max(1, days) + " 天")
+                        .setPositiveButton("确定", null)
+                        .show();
+                    return;
+                }
+                final EditText et = new EditText(mActivity);
+                et.setHint("请输入激活卡密");
+                new android.app.AlertDialog.Builder(mActivity)
+                    .setTitle("🔑 卡密激活")
+                    .setMessage("输入激活码，解锁全部功能")
+                    .setView(et, 40, 0, 40, 0)
+                    .setPositiveButton("激活", (dialog, which) -> {
+                        String card = et.getText().toString().trim();
+                        if (card.isEmpty()) { Toast.makeText(mContext, "请输入卡密", Toast.LENGTH_SHORT).show(); return; }
+                        CardAuthInterceptor.doAuth(mActivity, card, new CardAuthInterceptor.AuthCallback() {
+                            @Override
+                            public void onSuccess(String msg, int vl) {
+                                runOnUiThread(() -> {
+                                    TextView tv = findViewById(resId("tvActivateStatus"));
+                                    if (tv != null) tv.setText("已激活");
+                                    Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                                });
+                            }
+                            @Override
+                            public void onFailure(String error) {
+                                runOnUiThread(() -> Toast.makeText(mContext, "❌ " + error, Toast.LENGTH_SHORT).show());
+                            }
+                        });
+                    })
+                    .setNegativeButton("取消", null)
+                    .show();
+            }
+        });
+
+        // ── 全能看：自定义源管理 ──
+        findViewById(resId("llSourceManager")).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FastClickCheckUtil.check(view);
+                try {
+                    Intent intent = new Intent(mActivity, SourceManagerActivity.class);
+                    mActivity.startActivity(intent);
+                } catch (Exception e) {
+                    Toast.makeText(mContext, "源管理暂不可用", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         // ── 全能看：云盘配置 ──
         findViewById(resId("llCloudDrive")).setOnClickListener(new View.OnClickListener() {
             @Override
