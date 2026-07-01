@@ -152,7 +152,7 @@ public class ScreenUtils {
 
     /** 判断当前设备是否是电视/盒子 */
     public static boolean isTv(Context context) {
-        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(Context.UI_MODE_SERVICE);
         return uiModeManager != null
                 && uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION;
     }
