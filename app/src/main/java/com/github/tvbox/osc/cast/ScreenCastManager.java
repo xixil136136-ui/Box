@@ -101,7 +101,7 @@ public class ScreenCastManager {
             return;
         }
 
-        mediaProjection = mpManager.getProjection(resultCode, data);
+        mediaProjection = mpManager.getMediaProjection(resultCode, data);
         initEncoder();
         createVirtualDisplay();
         startEncodingLoop();
