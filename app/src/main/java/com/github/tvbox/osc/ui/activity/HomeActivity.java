@@ -26,6 +26,7 @@ import android.view.animation.Animation;
 import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -947,5 +948,32 @@ public class HomeActivity extends BaseActivity {
 //            jumpActivity(SettingActivity.class);
 //        }
 //    }
+
+    /** 弹出源配置对话框 */
+    private void showSourceConfigDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("📦 配置视频源");
+        builder.setMessage("首次使用，请输入视频源地址。\n\n推荐源:\nhttp://肥猫.com/\nhttp://饭太硬.com/tv\nhttp://ok321.top/tv\n\n也可以后续在设置中修改");
+        
+        EditText input = new EditText(this);
+        input.setHint("输入源地址");
+        input.setText("http://肥猫.com/");
+        input.setInputType(android.text.InputType.TYPE_TEXT_VARIATION_URI);
+        
+        LinearLayout layout = new LinearLayout(this);
+        layout.setPadding(60, 20, 60, 20);
+        layout.addView(input);
+        builder.setView(layout);
+        
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            String url = input.getText().toString().trim();
+            if (!url.isEmpty()) {
+                Hawk.put(HawkConfig.API_URL, url);
+                recreate();
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.show();
+    }
 
 }
