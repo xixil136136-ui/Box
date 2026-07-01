@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -194,7 +195,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         CardAuthInterceptor.doAuth(mActivity, card, new CardAuthInterceptor.AuthCallback() {
                             @Override
                             public void onSuccess(String msg, int vl) {
-                                runOnUiThread(() -> {
+                                if (getActivity() != null) getActivity().runOnUiThread(() -> {
                                     TextView tv = findViewById(resId("tvActivateStatus"));
                                     if (tv != null) tv.setText("已激活");
                                     Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
@@ -202,7 +203,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
                             }
                             @Override
                             public void onFailure(String error) {
-                                runOnUiThread(() -> Toast.makeText(mContext, "❌ " + error, Toast.LENGTH_SHORT).show());
+                                if (getActivity() != null) getActivity().runOnUiThread(() -> Toast.makeText(mContext, "❌ " + error, Toast.LENGTH_SHORT).show());
                             }
                         });
                     })
