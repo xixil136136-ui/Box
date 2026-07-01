@@ -6,7 +6,9 @@ import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -47,6 +49,7 @@ public class SettingActivity extends BaseActivity {
     private String currentLive;
     private int homeRec;
     private int dnsOpt;
+    private EditText inputUrl; // 添加输入框
 
     @Override
     protected int getLayoutResID() {
@@ -177,6 +180,34 @@ public class SettingActivity extends BaseActivity {
         return super.dispatchKeyEvent(event);
     }
 
+    /**
+     * 保存配置URL的方法
+     */
+    public void saveConfigUrl() {
+        // 1. 获取输入框文本并进行严谨的 null 与去空格校验
+        String url = (inputUrl != null && inputUrl.getText() != null) ? 
+                     inputUrl.getText().toString().trim() : "";
+
+        if (url.isEmpty()) {
+            Toast.makeText(this, "配置地址不能为空", Toast.LENGTH_SHORT).show();
+        } else {
+            try {
+                // 2. 强行持久化写入 Hawk2.xml
+                Hawk.put(ApiConfig.KEY_DIY_API, url);
+                Toast.makeText(this, "配置保存成功", Toast.LENGTH_SHORT).show();
+                
+                // 3. 触发影视源重新刮削加载（通知全局配置更新）
+                ApiConfig.get().loadConfig(false, null); 
+                
+                // 4. 正常关闭当前设置页面
+                finish();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if ((homeSourceKey != null && !homeSourceKey.equals(Hawk.get(HawkConfig.HOME_API, ""))) ||
@@ -184,7 +215,8 @@ public class SettingActivity extends BaseActivity {
                 homeRec != Hawk.get(HawkConfig.HOME_REC, 0) ||
                 dnsOpt != Hawk.get(HawkConfig.DOH_URL, 0)) {
             AppManager.getInstance().finishAllActivity();
-            if (currentApi.equals(Hawk.get(HawkConfig.API_URL, "")) & (currentLive.equals(Hawk.get(HawkConfig.LIVE_URL, "")))) {
+            // 修复：将 & 改为 && (逻辑与)
+            if (currentApi.equals(Hawk.get(HawkConfig.API_URL, "")) && (currentLive.equals(Hawk.get(HawkConfig.LIVE_URL, "")))) {
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("useCache", true);
                 jumpActivity(HomeActivity.class, bundle);
