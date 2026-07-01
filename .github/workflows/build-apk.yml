@@ -20,7 +20,7 @@ jobs:
             echo "sdk.dir=$ANDROID_HOME" > local.properties
             echo "local.properties created"
           fi
-      - run: ./gradlew assembleArm64GenericNormalRelease assembleArmeabiGenericNormalRelease --no-daemon -Dorg.gradle.jvmargs=-Xmx2048m
+      - run: ./gradlew clean assembleArm64GenericNormalRelease assembleArmeabiGenericNormalRelease --no-daemon -Dorg.gradle.jvmargs=-Xmx2048m
       - run: mkdir -p apk_output/ && find app/build/outputs -name "*.apk" -type f | while read apk; do cp -v "$apk" apk_output/; done
       - uses: actions/upload-artifact@v4
         with:
