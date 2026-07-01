@@ -106,13 +106,15 @@ public class SourceManagerActivity extends BaseActivity {
         layout.addView(etUrl);
 
         // 仅视频源显示API字段
-        EditText etApi = null;
+        final EditText etApi;
         if (sourceType == 1) {
             etApi = new EditText(this);
             etApi.setHint("API地址（可选，如: https://example.com/api.php/provide/vod）");
             etApi.setText(isEdit ? existing.api : "");
             etApi.setPadding(20, 12, 20, 12);
             layout.addView(etApi);
+        } else {
+            etApi = null;
         }
 
         String title = isEdit ? "编辑" : "添加";
@@ -124,20 +126,21 @@ public class SourceManagerActivity extends BaseActivity {
                 .create();
 
         dialog.show();
+        final int finalType = sourceType;
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             String name = etName.getText().toString().trim();
             String url = etUrl.getText().toString().trim();
             String api = etApi != null ? etApi.getText().toString().trim() : "";
 
-            if (name.isEmpty()) { Toast.makeText(this, "请输入名称", Toast.LENGTH_SHORT).show(); return; }
-            if (url.isEmpty()) { Toast.makeText(this, "请输入地址", Toast.LENGTH_SHORT).show(); return; }
+            if (name.isEmpty()) { Toast.makeText(SourceManagerActivity.this, "请输入名称", Toast.LENGTH_SHORT).show(); return; }
+            if (url.isEmpty()) { Toast.makeText(SourceManagerActivity.this, "请输入地址", Toast.LENGTH_SHORT).show(); return; }
 
             if (isEdit) {
                 existing.name = name;
                 existing.url = url;
                 if (existing.type == 1) existing.api = api;
             } else {
-                sourceList.add(new SourceItem(name, url, api, sourceType));
+                sourceList.add(new SourceItem(name, url, api, finalType));
             }
             saveAndRefresh();
             dialog.dismiss();
