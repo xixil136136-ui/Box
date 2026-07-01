@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="llAdultManage" type="id"/>
     <item name="tvAdultStatus" type="id"/>
-    <item name="tvKidsStatus" type="id"/>
-    <item name="tvCloudDrive" type="id"/>
-    <item name="tvMusicRadio" type="id"/>
+    <item name="llAdultChangePwd" type="id"/>
+    <item name="llActivate" type="id"/>
+    <item name="tvActivateStatus" type="id"/>
     <item name="llKidsMode" type="id"/>
+    <item name="tvKidsStatus" type="id"/>
+    <item name="llSourceManager" type="id"/>
+    <item name="tvSourceCount" type="id"/>
     <item name="llCloudDrive" type="id"/>
+    <item name="tvCloudDrive" type="id"/>
     <item name="llMusicRadio" type="id"/>
+    <item name="tvMusicRadio" type="id"/>
+    <item name="llKidsTimer" type="id"/>
+    <item name="tvKidsTimer" type="id"/>
 </resources>
