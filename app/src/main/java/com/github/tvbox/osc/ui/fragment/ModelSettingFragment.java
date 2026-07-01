@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -185,10 +186,13 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 }
                 final EditText et = new EditText(mActivity);
                 et.setHint("请输入激活卡密");
-                new android.app.AlertDialog.Builder(mActivity)
+                LinearLayout layout = new LinearLayout(mActivity);
+                    layout.setPadding(40, 0, 40, 0);
+                    layout.addView(et);
+                    new android.app.AlertDialog.Builder(mActivity)
                     .setTitle("🔑 卡密激活")
                     .setMessage("输入激活码，解锁全部功能")
-                    .setView(et, 40, 0, 40, 0)
+                    .setView(layout)
                     .setPositiveButton("激活", (dialog, which) -> {
                         String card = et.getText().toString().trim();
                         if (card.isEmpty()) { Toast.makeText(mContext, "请输入卡密", Toast.LENGTH_SHORT).show(); return; }
