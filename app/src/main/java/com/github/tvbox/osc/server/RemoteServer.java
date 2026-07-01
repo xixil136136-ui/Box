@@ -240,6 +240,16 @@ public class RemoteServer extends NanoHTTPD {
                 }
                 try {
                     Map < String, String > params = session.getParms();
+                    if (fileName.equals("/dlna/avt/control")) {
+                        Map<String, String> params = session.getParms();
+                        String body = params != null ? params.get("body") : "";
+                        if (body != null && body.contains("Play")) {
+                            return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.handleAvtPlayControl(body));
+                        }
+                        return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "text/xml; charset=utf-8", DLNAManager.handleAvtControl(body));
+                    } else if (fileName.equals("/dlna/cm/control") || fileName.equals("/dlna/rc/control")) {
+                        return NanoHTTPD.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, "text/xml; charset=utf-8", "<?xml version=\"1.0\"?><s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body></s:Body></s:Envelope>");
+                    } else 
                     if (fileName.equals("/upload")) {
                         String path = params.get("path");
                         for (String k: files.keySet()) {
