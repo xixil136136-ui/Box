@@ -50,6 +50,8 @@ public class SettingActivity extends BaseActivity {
     private int homeRec;
     private int dnsOpt;
 
+    public static boolean openVipSection = false;
+
     @Override
     protected int getLayoutResID() {
         return R.layout.activity_setting;
@@ -57,6 +59,7 @@ public class SettingActivity extends BaseActivity {
 
     @Override
     protected void init() {
+        openVipSection = getIntent() != null && getIntent().getBooleanExtra("open_vip", false);
         initView();
         initData();
     }

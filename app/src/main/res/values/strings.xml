@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">全能看</string>
     <string name="app_home">Home</string>
-    <string name="app_source"></string>
+    <string name="app_source">http://127.0.0.1:9978/tvbox.json</string>
 
     // Home Page //
     <string name="hm_ok">Load Complete</string>

@@ -243,8 +243,14 @@ public class ApiDialog extends BaseDialog {
 
     private void refreshQRCode() {
         String address = ControlManager.get().getAddress(false);
-        tvAddress.setText(String.format("手机/电脑扫描上方二维码或者直接浏览器访问地址\n%s", address));
-        ivQRCode.setImageBitmap(QRCodeGen.generateBitmap(address, AutoSizeUtils.mm2px(getContext(), 300), AutoSizeUtils.mm2px(getContext(), 300)));
+        if (address == null || address.trim().isEmpty()) {
+            tvAddress.setText("⏳ 等待网络连接...\n请确保设备已连接WiFi");
+            ivQRCode.setVisibility(View.GONE);
+        } else {
+            tvAddress.setText(String.format("手机/电脑扫描上方二维码或者直接浏览器访问地址\n%s", address));
+            ivQRCode.setVisibility(View.VISIBLE);
+            ivQRCode.setImageBitmap(QRCodeGen.generateBitmap(address, AutoSizeUtils.mm2px(getContext(), 300), AutoSizeUtils.mm2px(getContext(), 300)));
+        }
     }
 
     public void setOnListener(OnListener listener) {

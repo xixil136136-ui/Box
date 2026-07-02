@@ -344,8 +344,22 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.setOnListener(new ApiDialog.OnListener() {
                     @Override
                     public void onchange(String api) {
-                        Hawk.put(HawkConfig.API_URL, api);
-                        tvApi.setText(api);
+                        try {
+                            Hawk.put(HawkConfig.API_URL, api);
+                            tvApi.setText(api);
+                            // 清除旧缓存
+                            String cacheDir = mActivity.getFilesDir().getAbsolutePath();
+                            File[] files = new File(cacheDir).listFiles();
+                            if (files != null) {
+                                for (File f : files) {
+                                    if (f.isFile() && f.getName().length() == 32) {
+                                        f.delete();
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         Toast.makeText(mActivity, "源地址已保存，正在重新加载...", Toast.LENGTH_SHORT).show();
                         // 延时重启确保 Hawk 异步刷盘完成
                         new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -1167,6 +1181,23 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 findViewById(R.id.llDebug).setVisibility(View.VISIBLE);
             }
         };
+
+        // ★ VIP按钮进入：自动聚焦到卡密激活选项
+        if (SettingActivity.openVipSection) {
+            SettingActivity.openVipSection = false;
+            try {
+                final View llAct = findViewById(R.id.llActivate);
+                if (llAct != null) {
+                    llAct.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            llAct.requestFocus();
+                            llAct.performClick();
+                        }
+                    }, 600);
+                }
+            } catch (Exception e) { /* 安全跳过 */ }
+        }
 
     }
 

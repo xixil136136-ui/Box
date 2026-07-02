@@ -61,6 +61,7 @@ import com.github.tvbox.osc.ui.tv.widget.FixedSpeedScroller;
 import com.github.tvbox.osc.ui.tv.widget.NoScrollViewPager;
 import com.github.tvbox.osc.ui.tv.widget.ViewObj;
 import com.github.tvbox.osc.util.AppManager;
+import com.github.tvbox.osc.util.CardAuthInterceptor;
 import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.FileUtils;
@@ -102,6 +103,7 @@ public class HomeActivity extends BaseActivity {
     private ImageView tvStyle;
     private ImageView tvDraw;
     private ImageView tvMenu;
+    private TextView tvVIP;
     private TextView tvDate;
     private TvRecyclerView mGridView;
     private NoScrollViewPager mViewPager;
@@ -167,6 +169,7 @@ public class HomeActivity extends BaseActivity {
         this.tvFind = findViewById(R.id.tvFind);
         this.tvStyle = findViewById(R.id.tvStyle);
         this.tvDraw = findViewById(R.id.tvDrawer);
+        this.tvVIP = findViewById(R.id.tvVIP);
         this.tvMenu = findViewById(R.id.tvMenu);
         this.tvDate = findViewById(R.id.tvDate);
         this.contentLayout = findViewById(R.id.contentLayout);
@@ -355,6 +358,50 @@ public class HomeActivity extends BaseActivity {
                 return true;
             }
         });
+        // Button : VIP >> Direct Activation Code Dialog -------------
+        tvVIP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    FastClickCheckUtil.check(view);
+                    String savedCard = Hawk.get("card_auth_key", "");
+                    long expire = Hawk.get("card_auth_expire", 0L);
+                    if (!savedCard.isEmpty() && expire > System.currentTimeMillis()) {
+                        int days = (int)((expire - System.currentTimeMillis()) / 86400000L);
+                        new AlertDialog.Builder(HomeActivity.this)
+                            .setTitle("✅ 已激活").setMessage("卡密: " + savedCard + "\n剩余: " + Math.max(1, days) + " 天")
+                            .setPositiveButton("确定", null).show();
+                        return;
+                    }
+                    final EditText et = new EditText(HomeActivity.this);
+                    et.setHint("请输入激活卡密");
+                    LinearLayout ll = new LinearLayout(HomeActivity.this);
+                    ll.setPadding(40, 0, 40, 0);
+                    ll.addView(et);
+                    new AlertDialog.Builder(HomeActivity.this)
+                        .setTitle("🔑 卡密激活").setMessage("输入激活码，解锁全部功能")
+                        .setView(ll)
+                        .setPositiveButton("激活", (dialog, which) -> {
+                            String card = et.getText().toString().trim();
+                            if (card.isEmpty()) { Toast.makeText(HomeActivity.this, "请输入卡密", Toast.LENGTH_SHORT).show(); return; }
+                            CardAuthInterceptor.doAuth(HomeActivity.this, card, new CardAuthInterceptor.AuthCallback() {
+                                @Override public void onSuccess(String msg, int vl) {
+                                    HomeActivity.this.runOnUiThread(() -> {
+                                        Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_LONG).show();
+                                    });
+                                }
+                                @Override public void onFailure(String error) {
+                                    HomeActivity.this.runOnUiThread(() -> Toast.makeText(HomeActivity.this, "❌ " + error, Toast.LENGTH_SHORT).show());
+                                }
+                            });
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+                } catch (Exception e) {
+                    Toast.makeText(HomeActivity.this, "VIP功能无法打开，请更新应用", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         // Button : Date >> Go into Android Date Settings --------------
         tvDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -435,6 +482,32 @@ public class HomeActivity extends BaseActivity {
                 tvWifi.setImageDrawable(res.getDrawable(R.drawable.hm_mobile));
             } else if (cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_ETHERNET) {
                 tvWifi.setImageDrawable(res.getDrawable(R.drawable.hm_lan));
+            }
+        }
+
+        // ── 修复：首次启动保底 ── 如果 Hawk 中没有 API URL，预设本地源 ──
+        String checkUrl = Hawk.get(HawkConfig.API_URL, "");
+        if (checkUrl == null || checkUrl.isEmpty()) {
+            String defaultLocalUrl = "http://127.0.0.1:9978/tvbox.json";
+            Hawk.put(HawkConfig.API_URL, defaultLocalUrl);
+            // 同时预设一些默认直播源
+            if (Hawk.get(HawkConfig.LIVE_URL, "").isEmpty()) {
+                Hawk.put(HawkConfig.LIVE_URL, "https://dxawi.github.io/0/0.m3u");
+            }
+        }
+
+        // ── 修复：检测 API URL 是否被误设为 M3U 直播地址 ──
+        String savedApiUrl = Hawk.get(HawkConfig.API_URL, "");
+        if (savedApiUrl != null && !savedApiUrl.isEmpty()) {
+            String lowerUrl = savedApiUrl.toLowerCase().trim();
+            if (lowerUrl.endsWith(".m3u") || lowerUrl.endsWith(".m3u8")) {
+                // 把 M3U URL 转移到 LIVE_URL（直播源）
+                Hawk.put(HawkConfig.LIVE_URL, savedApiUrl);
+                // 清除错误的 API URL
+                Hawk.delete(HawkConfig.API_URL);
+                // 设置正确的默认源
+                Hawk.put(HawkConfig.API_URL, "http://127.0.0.1:9978/tvbox.json");
+                Toast.makeText(this, "检测到直播地址被误设为配置源，已自动修正", Toast.LENGTH_LONG).show();
             }
         }
 

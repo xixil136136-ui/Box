@@ -1,0 +1,43 @@
+{
+  "sites": [
+    {
+      "key": "feifan",
+      "name": "非凡资源",
+      "type": 1,
+      "api": "https://cj.ffzyapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "playerType": 1,
+      "ext": "",
+      "jar": ""
+    },
+    {
+      "key": "liangzi",
+      "name": "量子资源",
+      "type": 1,
+      "api": "https://cj.lziapi.com/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "playerType": 1,
+      "ext": "",
+      "jar": ""
+    }
+  ],
+  "lives": [],
+  "parses": [
+    {
+      "name": "JsonPlayer",
+      "type": 0,
+      "url": "",
+      "ext": {}
+    }
+  ],
+  "flags": [
+    "4k",
+    "1080p"
+  ],
+  "spider": "",
+  "wallpaper": ""
+}

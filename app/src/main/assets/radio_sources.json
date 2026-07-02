@@ -1,30 +1,35 @@
 [
   {
-    "group": "央广",
+    "group": "央广经典",
     "channels": [
-      {"name": "中国之声", "url": "http://http.live.cntv.cn/channel01/64/1022_64k.m3u8"},
-      {"name": "经济之声", "url": "http://http.live.cntv.cn/channel01/64/1023_64k.m3u8"},
-      {"name": "音乐之声", "url": "http://http.live.cntv.cn/channel01/64/1024_64k.m3u8"},
-      {"name": "经典音乐广播", "url": "http://http.live.cntv.cn/channel01/64/1025_64k.m3u8"},
-      {"name": "中华之声", "url": "http://http.live.cntv.cn/channel01/64/1026_64k.m3u8"},
-      {"name": "神州之声", "url": "http://http.live.cntv.cn/channel01/64/1027_64k.m3u8"},
-      {"name": "华夏之声", "url": "http://http.live.cntv.cn/channel01/64/1028_64k.m3u8"},
-      {"name": "香港之声", "url": "http://http.live.cntv.cn/channel01/64/1029_64k.m3u8"}
+      {"name": "中国之声", "url": "http://ngcdn001.cnr.cn/live/zgzs/index.m3u8"},
+      {"name": "经济之声", "url": "http://ngcdn001.cnr.cn/live/jjzs/index.m3u8"},
+      {"name": "音乐之声", "url": "http://ngcdn001.cnr.cn/live/yyzs/index.m3u8"},
+      {"name": "经典音乐广播", "url": "http://ngcdn001.cnr.cn/live/jdyy/index.m3u8"},
+      {"name": "中华之声", "url": "http://ngcdn001.cnr.cn/live/zhzs/index.m3u8"},
+      {"name": "神州之声", "url": "http://ngcdn001.cnr.cn/live/szzs/index.m3u8"},
+      {"name": "华夏之声", "url": "http://ngcdn001.cnr.cn/live/hxzs/index.m3u8"},
+      {"name": "大湾区之声", "url": "http://ngcdn001.cnr.cn/live/dwqzs/index.m3u8"}
     ]
   },
   {
-    "group": "音乐",
+    "group": "音乐频道",
     "channels": [
-      {"name": "QQ音乐", "url": "http://fm.qq.com/live/classic_64k.m3u8"},
-      {"name": "网易云音乐", "url": "http://music.163.com/radiostat/radio/stream/0.m3u8"}
+      {"name": "QQ音乐", "url": "http://lhttp.qingting.fm/live/386/64k.m3u8"},
+      {"name": "网易云音乐", "url": "http://lhttp.qingting.fm/live/20286/64k.m3u8"},
+      {"name": "酷狗音乐", "url": "http://lhttp.qingting.fm/live/3440/64k.m3u8"},
+      {"name": "酷我音乐", "url": "http://lhttp.qingting.fm/live/387/64k.m3u8"}
     ]
   },
   {
-    "group": "地方",
+    "group": "地方电台",
     "channels": [
-      {"name": "北京音乐广播", "url": "http://http.live.cntv.cn/channel01/64/1033_64k.m3u8"},
+      {"name": "北京音乐广播", "url": "http://lhttp.qingting.fm/live/4600/64k.m3u8"},
       {"name": "上海动感101", "url": "http://lhttp.qingting.fm/live/386/64k.m3u8"},
-      {"name": "广东音乐之声", "url": "http://http.live.cntv.cn/channel01/64/1035_64k.m3u8"}
+      {"name": "广东音乐之声", "url": "http://lhttp.qingting.fm/live/1311/64k.m3u8"},
+      {"name": "浙江音乐调频", "url": "http://lhttp.qingting.fm/live/3915/64k.m3u8"},
+      {"name": "江苏音乐台", "url": "http://lhttp.qingting.fm/live/4595/64k.m3u8"},
+      {"name": "四川岷江音乐", "url": "http://lhttp.qingting.fm/live/16704/64k.m3u8"}
     ]
   }
 ]
