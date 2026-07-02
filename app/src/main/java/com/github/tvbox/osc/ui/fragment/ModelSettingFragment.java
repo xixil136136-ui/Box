@@ -347,12 +347,17 @@ public class ModelSettingFragment extends BaseLazyFragment {
                         Hawk.put(HawkConfig.API_URL, api);
                         tvApi.setText(api);
                         Toast.makeText(mActivity, "源地址已保存，正在重新加载...", Toast.LENGTH_SHORT).show();
-                        // 直接重启 HomeActivity 从 Hawk 读取配置，比异步 loadConfig 更可靠
-                        if (mActivity != null) {
-                            AppManager.getInstance().finishAllActivity();
-                            mActivity.startActivity(new Intent(mActivity, HomeActivity.class)
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                        }
+                        // 延时重启确保 Hawk 异步刷盘完成
+                        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mActivity != null) {
+                                    AppManager.getInstance().finishAllActivity();
+                                    mActivity.startActivity(new Intent(mActivity, HomeActivity.class)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                                }
+                            }
+                        }, 500);
                     }
                 });
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {

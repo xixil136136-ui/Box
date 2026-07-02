@@ -78,11 +78,20 @@ public class ControlManager {
                 @Override
                 public void onApiReceived(String url) {
                     // 保存到 Hawk 并触发 HomeActivity 重启加载
+                    // 注意: Hawk2 底层使用 SharedPreferences.apply() 异步写入,
+                    // 直接 restart 可能因进程被杀导致数据丢失。
+                    // 先同步写入到 Hawk 存储,再延时重启以确保磁盘写入完成。
                     Hawk.put(HawkConfig.API_URL, url);
-                    Intent intent = new Intent(mContext, HomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    mContext.startActivity(intent);
-                    EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_API_URL_CHANGE, url));
+                    // 通过 Handler 延时重启,确保异步写入有时间刷到磁盘
+                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(mContext, HomeActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            mContext.startActivity(intent);
+                            EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_API_URL_CHANGE, url));
+                        }
+                    }, 500);
                 }
 
                 @Override
