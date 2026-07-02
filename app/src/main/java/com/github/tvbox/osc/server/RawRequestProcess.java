@@ -2,6 +2,7 @@ package com.github.tvbox.osc.server;
 
 import android.content.Context;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -33,11 +34,23 @@ public class RawRequestProcess implements RequestProcess {
 
     @Override
     public NanoHTTPD.Response doResponse(NanoHTTPD.IHTTPSession session, String fileName, Map<String, String> params, Map<String, String> files) {
-        InputStream inputStream = mContext.getResources().openRawResource(this.resourceId);
         try {
-            return RemoteServer.newFixedLengthResponse(NanoHTTPD.Response.Status.OK, mimeType + "; charset=utf-8", inputStream, (long) inputStream.available());
+            InputStream inputStream = mContext.getResources().openRawResource(this.resourceId);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            byte[] data = new byte[8192];
+            int n;
+            while ((n = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, n);
+            }
+            inputStream.close();
+            return RemoteServer.newFixedLengthResponse(
+                    NanoHTTPD.Response.Status.OK,
+                    mimeType + "; charset=utf-8",
+                    new String(buffer.toByteArray(), "UTF-8")
+            );
         } catch (IOException IOExc) {
-            return RemoteServer.createPlainTextResponse(NanoHTTPD.Response.Status.INTERNAL_ERROR, "SERVER INTERNAL ERROR: IOException: " + IOExc.getMessage());
+            return RemoteServer.createPlainTextResponse(NanoHTTPD.Response.Status.INTERNAL_ERROR,
+                    "SERVER INTERNAL ERROR: IOException: " + IOExc.getMessage());
         }
     }
 }

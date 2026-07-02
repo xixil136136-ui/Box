@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
 import android.app.AlertDialog;
 
 import androidx.annotation.NonNull;
@@ -343,6 +344,24 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     public void onchange(String api) {
                         Hawk.put(HawkConfig.API_URL, api);
                         tvApi.setText(api);
+                        // 立即触发源重新加载，让用户确认后就能看到效果
+                        ApiConfig.get().loadConfig(false, new ApiConfig.LoadConfigCallback() {
+                            @Override
+                            public void success() {
+                                ((Activity) mActivity).runOnUiThread(() ->
+                                    Toast.makeText(mActivity, "源加载成功", Toast.LENGTH_SHORT).show());
+                            }
+                            @Override
+                            public void retry() {
+                                ((Activity) mActivity).runOnUiThread(() ->
+                                    ApiConfig.get().loadConfig(false, this, (Activity) mActivity));
+                            }
+                            @Override
+                            public void error(String msg) {
+                                ((Activity) mActivity).runOnUiThread(() ->
+                                    Toast.makeText(mActivity, "源加载失败: " + msg, Toast.LENGTH_SHORT).show());
+                            }
+                        }, (Activity) mActivity);
                     }
                 });
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {

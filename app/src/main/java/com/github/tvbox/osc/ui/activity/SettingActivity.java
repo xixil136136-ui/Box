@@ -207,15 +207,13 @@ public class SettingActivity extends BaseActivity {
         }
 
         try {
-            // 3. 持久化配置到 Hawk 加密存储
+            // 持久化配置到 Hawk 加密存储
             Hawk.put(HawkConfig.API_URL, url);
-            Toast.makeText(this, "配置保存成功", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "配置保存成功，正在加载源…", Toast.LENGTH_SHORT).show();
 
-            // 4. 触发影视源重新刮削加载
-            ApiConfig.get().loadConfig(false, null, this);
-
-            // 5. 关闭当前 Activity，触发上层重新加载配置
-            finish();
+            // 重启所有 Activity 触发重新加载（与 onBackPressed 检测变化的逻辑一致）
+            AppManager.getInstance().finishAllActivity();
+            jumpActivity(HomeActivity.class);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
