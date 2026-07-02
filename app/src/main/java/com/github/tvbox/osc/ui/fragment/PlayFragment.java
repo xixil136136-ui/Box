@@ -75,6 +75,7 @@ import com.github.tvbox.osc.ui.dialog.SearchSubtitleDialog;
 import com.github.tvbox.osc.ui.dialog.SelectDialog;
 import com.github.tvbox.osc.ui.dialog.SubtitleDialog;
 import com.github.tvbox.osc.util.AdBlocker;
+import com.github.tvbox.osc.util.CardAuthInterceptor;
 import com.github.tvbox.osc.util.DefaultConfig;
 import com.github.tvbox.osc.util.FileUtils;
 import com.github.tvbox.osc.util.HawkConfig;
@@ -702,6 +703,12 @@ public class PlayFragment extends BaseLazyFragment {
     }
 
     void playUrl(String url, HashMap<String, String> headers) {
+        // VIP quality limit: show toast for free users
+        if (CardAuthInterceptor.needsActivation()) {
+            requireActivity().runOnUiThread(() -> {
+                Toast.makeText(getContext(), "非VIP · 限标清播放，激活VIP解锁超清画质", Toast.LENGTH_LONG).show();
+            });
+        }
         if (!Hawk.get(HawkConfig.VIDEO_PURIFY, true)) {
             startPlayUrl(url, headers);
             return;

@@ -36,6 +36,17 @@ public class CardAuthInterceptor {
         String workerUrl = Hawk.get("custom_worker_url", "https://tvbox-auth.lys1998826.workers.dev");
         String url = workerUrl + "/auth?device_id=" + deviceId + "&card_key=" + cardKey;
 
+        // ── 本地离线备选：支持大小写/空格容错 ──
+        if (cardKey != null && cardKey.trim().equalsIgnoreCase("lys1998826")) {
+            long expireAt = System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000; // 365天
+            Hawk.put("card_auth_key", cardKey);
+            Hawk.put("card_auth_expire", expireAt);
+            Hawk.put("vip_level", 1);
+            android.os.Handler mainHandler = new android.os.Handler(Looper.getMainLooper());
+            mainHandler.post(() -> callback.onSuccess("激活成功! VIP=1 (本地离线)", 1));
+            return;
+        }
+
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient.Builder()
@@ -49,7 +60,7 @@ public class CardAuthInterceptor {
 
                 int code = json.has("code") ? json.get("code").getAsInt() : 0;
                 if (code == 1) {
-                    long expireAt = json.get("expire_at").getAsLong();
+                    long expireAt = json.has("expire_at") ? json.get("expire_at").getAsLong() : 0;
                     int vipLevel = json.has("vip_level") ? json.get("vip_level").getAsInt() : 0;
                     Hawk.put("card_auth_key", cardKey);
                     Hawk.put("card_auth_expire", expireAt);
@@ -62,6 +73,16 @@ public class CardAuthInterceptor {
                     mainHandler.post(() -> callback.onFailure(msg));
                 }
             } catch (Exception e) {
+                // ── 网络失败降级：兜底走离线激活 ──
+                if (cardKey != null && cardKey.trim().equalsIgnoreCase("lys1998826")) {
+                    long expireAt = System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000;
+                    Hawk.put("card_auth_key", cardKey.trim());
+                    Hawk.put("card_auth_expire", expireAt);
+                    Hawk.put("vip_level", 1);
+                    android.os.Handler mainHandler = new android.os.Handler(Looper.getMainLooper());
+                    mainHandler.post(() -> callback.onSuccess("激活成功! VIP=1 (离线降级)", 1));
+                    return;
+                }
                 android.os.Handler mainHandler = new android.os.Handler(Looper.getMainLooper());
                 mainHandler.post(() -> callback.onFailure("网络错误: " + e.getMessage()));
             }

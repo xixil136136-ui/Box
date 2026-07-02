@@ -24,6 +24,10 @@ public class AdBlocker {
         return AD_HOSTS.contains(host);
     }
     public static boolean isAd(String url) {
+        // VIP feature: only block ads if user has activated
+        if (CardAuthInterceptor.needsActivation()) {
+            return false; // free user → show ads (don't block)
+        }
         url = url.toLowerCase();
         for (String adHost : AD_HOSTS) {
             if (url.contains(adHost)) {

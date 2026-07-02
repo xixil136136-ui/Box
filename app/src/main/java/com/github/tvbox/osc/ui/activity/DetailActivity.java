@@ -53,6 +53,7 @@ import com.github.tvbox.osc.ui.dialog.DescDialog;
 import com.github.tvbox.osc.ui.dialog.PushDialog;
 import com.github.tvbox.osc.ui.dialog.QuickSearchDialog;
 import com.github.tvbox.osc.ui.fragment.PlayFragment;
+import com.github.tvbox.osc.util.CardAuthInterceptor;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.ImgUtil;
@@ -449,6 +450,11 @@ public class DetailActivity extends BaseActivity {
                 }
                 String newFlag = seriesFlagAdapter.getData().get(position).name;
                 if (vodInfo != null && !vodInfo.playFlag.equals(newFlag)) {
+                    // VIP source limit: free users cannot switch sources
+                    if (CardAuthInterceptor.needsActivation()) {
+                        Toast.makeText(DetailActivity.this, "请激活VIP以解锁源切换功能（未激活限用1个源）", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     for (int i = 0; i < vodInfo.seriesFlags.size(); i++) {
                         VodInfo.VodSeriesFlag flag = vodInfo.seriesFlags.get(i);
                         if (flag.name.equals(vodInfo.playFlag)) {
@@ -490,6 +496,14 @@ public class DetailActivity extends BaseActivity {
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 FastClickCheckUtil.check(view);
                 if (vodInfo != null && vodInfo.seriesMap.get(vodInfo.playFlag).size() > 0) {
+                    // VIP episode limit: free users can only watch first 3 episodes
+                    if (CardAuthInterceptor.needsActivation()) {
+                        int globalIndex = GroupIndex * GroupCount + position;
+                        if (globalIndex >= 3) {
+                            Toast.makeText(DetailActivity.this, "请激活VIP以解锁完整剧集（未激活限看前3集）", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
                     boolean reload = false;
                     if (vodInfo.getplayIndex() != GroupIndex * GroupCount + position) {
                         for (int i = 0; i < seriesAdapter.getData().size(); i++) {

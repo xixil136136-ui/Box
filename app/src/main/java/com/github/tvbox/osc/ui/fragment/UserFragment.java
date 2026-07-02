@@ -17,6 +17,7 @@ import com.github.tvbox.osc.cache.RoomDataManger;
 import com.github.tvbox.osc.event.ServerEvent;
 import com.github.tvbox.osc.ui.activity.*;
 import com.github.tvbox.osc.ui.adapter.HomeHotVodAdapter;
+import com.github.tvbox.osc.util.CardAuthInterceptor;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.util.UA;
@@ -359,6 +360,10 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
 
         FastClickCheckUtil.check(v);
         if (v.getId() == R.id.tvLive) {
+            if (CardAuthInterceptor.needsActivation()) {
+                Toast.makeText(getContext(), "请先激活VIP以解锁直播功能", Toast.LENGTH_SHORT).show();
+                return;
+            }
             jumpActivity(LivePlayActivity.class);
         } else if (v.getId() == R.id.tvSearch) {
             jumpActivity(SearchActivity.class);
@@ -367,10 +372,18 @@ public class UserFragment extends BaseLazyFragment implements View.OnClickListen
         } else if (v.getId() == R.id.tvHistory) {
             jumpActivity(HistoryActivity.class);
         } else if (v.getId() == R.id.tvPush) {
+            if (CardAuthInterceptor.needsActivation()) {
+                Toast.makeText(getContext(), "请先激活VIP以解锁投屏功能", Toast.LENGTH_SHORT).show();
+                return;
+            }
             jumpActivity(PushActivity.class);
         } else if (v.getId() == R.id.tvFavorite) {
             jumpActivity(CollectActivity.class);
         } else if (v.getId() == R.id.tvDrive) {
+            if (CardAuthInterceptor.needsActivation()) {
+                Toast.makeText(getContext(), "请先激活VIP以解锁网盘功能", Toast.LENGTH_SHORT).show();
+                return;
+            }
             jumpActivity(DriveActivity.class);
         } else if (v.getId() == R.id.tvRadio) {
             jumpActivity(RadioActivity.class);
