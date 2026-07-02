@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.github.tvbox.osc.event.RefreshEvent;
 import com.github.tvbox.osc.receiver.DetailReceiver;
 import com.github.tvbox.osc.receiver.SearchReceiver;
+import com.github.tvbox.osc.ui.activity.HomeActivity;
 import com.github.tvbox.osc.util.HawkConfig;
 import com.github.tvbox.osc.dlna.DLNAManager;
 import com.orhanobut.hawk.Hawk;
@@ -76,6 +77,11 @@ public class ControlManager {
 
                 @Override
                 public void onApiReceived(String url) {
+                    // 保存到 Hawk 并触发 HomeActivity 重启加载
+                    Hawk.put(HawkConfig.API_URL, url);
+                    Intent intent = new Intent(mContext, HomeActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    mContext.startActivity(intent);
                     EventBus.getDefault().post(new RefreshEvent(RefreshEvent.TYPE_API_URL_CHANGE, url));
                 }
 

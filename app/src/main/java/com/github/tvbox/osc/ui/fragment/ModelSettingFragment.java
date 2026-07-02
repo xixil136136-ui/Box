@@ -22,7 +22,9 @@ import com.github.tvbox.osc.bean.SourceBean;
 import com.github.tvbox.osc.player.thirdparty.Kodi;
 import com.github.tvbox.osc.player.thirdparty.MXPlayer;
 import com.github.tvbox.osc.player.thirdparty.ReexPlayer;
+import com.github.tvbox.osc.ui.activity.HomeActivity;
 import com.github.tvbox.osc.ui.activity.SettingActivity;
+import com.github.tvbox.osc.util.AppManager;
 import com.github.tvbox.osc.ui.adapter.ApiHistoryDialogAdapter;
 import com.github.tvbox.osc.ui.adapter.SelectDialogAdapter;
 import com.github.tvbox.osc.ui.dialog.AboutDialog;
@@ -344,24 +346,13 @@ public class ModelSettingFragment extends BaseLazyFragment {
                     public void onchange(String api) {
                         Hawk.put(HawkConfig.API_URL, api);
                         tvApi.setText(api);
-                        // 立即触发源重新加载，让用户确认后就能看到效果
-                        ApiConfig.get().loadConfig(false, new ApiConfig.LoadConfigCallback() {
-                            @Override
-                            public void success() {
-                                ((Activity) mActivity).runOnUiThread(() ->
-                                    Toast.makeText(mActivity, "源加载成功", Toast.LENGTH_SHORT).show());
-                            }
-                            @Override
-                            public void retry() {
-                                ((Activity) mActivity).runOnUiThread(() ->
-                                    ApiConfig.get().loadConfig(false, this, (Activity) mActivity));
-                            }
-                            @Override
-                            public void error(String msg) {
-                                ((Activity) mActivity).runOnUiThread(() ->
-                                    Toast.makeText(mActivity, "源加载失败: " + msg, Toast.LENGTH_SHORT).show());
-                            }
-                        }, (Activity) mActivity);
+                        Toast.makeText(mActivity, "源地址已保存，正在重新加载...", Toast.LENGTH_SHORT).show();
+                        // 直接重启 HomeActivity 从 Hawk 读取配置，比异步 loadConfig 更可靠
+                        if (mActivity != null) {
+                            AppManager.getInstance().finishAllActivity();
+                            mActivity.startActivity(new Intent(mActivity, HomeActivity.class)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        }
                     }
                 });
                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
