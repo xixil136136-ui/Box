@@ -7,7 +7,6 @@ import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +49,6 @@ public class SettingActivity extends BaseActivity {
     private String currentLive;
     private int homeRec;
     private int dnsOpt;
-    private EditText inputUrl;
 
     @Override
     protected int getLayoutResID() {
@@ -67,13 +65,6 @@ public class SettingActivity extends BaseActivity {
         mGridView = findViewById(R.id.mGridView);
         mViewPager = findViewById(R.id.mViewPager);
         
-        // 初始化输入框（如果布局中有的话）
-        try {
-            inputUrl = findViewById(R.id.inputUrl);
-        } catch (Exception e) {
-            // 如果布局中没有这个ID，继续正常运行
-            inputUrl = null;
-        }
         
         sortAdapter = new SettingMenuAdapter();
         mGridView.setAdapter(sortAdapter);
@@ -205,40 +196,26 @@ public class SettingActivity extends BaseActivity {
     }
 
     /**
-     * 保存配置URL的方法
-     * 功能：验证输入 → 持久化存储 → 重新加载配置 → 关闭页面
+     * 保存配置URL的方法（外部传入URL，由ApiDialog等调用）
+     * 功能：安全校验输入 → 持久化到 Hawk → 关闭页面触发数据加载
      */
-    public void saveConfigUrl() {
-        // 1. 获取输入框文本并进行严谨的 null 与去空格校验
-        String url = (inputUrl != null && inputUrl.getText() != null) ? 
-                     inputUrl.getText().toString().trim() : "";
-
-        if (url.isEmpty()) {
+    public void saveConfigUrl(String url) {
+        // 1. 安全空值校验
+        if (url == null || url.trim().isEmpty()) {
             Toast.makeText(this, "配置地址不能为空", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        // 验证URL格式
-        if (!isValidUrl(url)) {
-            Toast.makeText(this, "配置地址格式不正确", Toast.LENGTH_SHORT).show();
             return;
         }
 
         try {
-            // 2. 强行持久化写入 Hawk数据库
-            Hawk.put(ApiConfig.KEY_DIY_API, url);
+            // 3. 持久化配置到 Hawk 加密存储
+            Hawk.put(HawkConfig.API_URL, url);
             Toast.makeText(this, "配置保存成功", Toast.LENGTH_SHORT).show();
-            
-            // 3. 触发影视源重新刮削加载（通知全局配置更新）
-            try {
-                ApiConfig.get().loadConfig(false, null);
-            } catch (Exception e) {
-                e.printStackTrace();
-                // 配置加载失败不应该中断流程
-            }
-            
-            // 4. 延迟关闭当前设置页面，给用户反馈时间
-            mHandler.postDelayed(this::finish, 500);
+
+            // 4. 触发影视源重新刮削加载
+            ApiConfig.get().loadConfig(false, null, this);
+
+            // 5. 关闭当前 Activity，触发上层重新加载配置
+            finish();
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "保存失败: " + e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -262,7 +239,7 @@ public class SettingActivity extends BaseActivity {
      */
     public void clearAllConfig() {
         try {
-            Hawk.delete(ApiConfig.KEY_DIY_API);
+            Hawk.delete(HawkConfig.API_URL);
             Toast.makeText(this, "配置已清空", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();

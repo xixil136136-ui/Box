@@ -127,96 +127,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
 
         // ── 全能看：内容管理 ──
-        try { View v = findViewById(R.id.tvAdultStatus); if(v != null && mActivity != null) { ((TextView)v).setText(Hawk.get(HawkConfig.ADULT_CONTENT, false) ? "显示" : "隐藏"); } } catch(Exception e){}
-        try { View v = findViewById(R.id.llAdultManage); if(v != null && mActivity != null) { v.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View view) { FastClickCheckUtil.check(view); AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false); pwdDialog.setOnPasswordVerifyListener(new Runnable() { @Override public void run() { boolean c = Hawk.get(HawkConfig.ADULT_CONTENT, false); Hawk.put(HawkConfig.ADULT_CONTENT, !c); TextView tv = findViewById(R.id.tvAdultStatus); if(tv != null) tv.setText(c ? "隐藏" : "显示"); Toast.makeText(mContext, c ? "已隐藏" : "已显示", Toast.LENGTH_SHORT).show(); } }); pwdDialog.show(); } }); } } catch(Exception e){}
-        try { View v = findViewById(R.id.llAdultChangePwd); if(v != null && mActivity != null) { v.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v2) { FastClickCheckUtil.check(v2); AdminPasswordDialog verify = new AdminPasswordDialog(mActivity, "身份验证", false); verify.setOnPasswordVerifyListener(new Runnable() { @Override public void run() { new AdminPasswordDialog(mActivity, "设置新密码", true).show(); } }); verify.show(); } }); } } catch(Exception e){}
-        
-        // ── 全能看：少儿模式 ──
-        try {
-            final TextView tvKids = findViewById(R.id.tvKidsStatus);
-            if(tvKids != null) tvKids.setText(Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false) ? "开启" : "关闭");
-            View v = findViewById(R.id.llKidsMode);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        FastClickCheckUtil.check(view);
-                        if(Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false)) {
-                            ContentGuardInterceptor.exitKidsMode(mActivity, new Runnable() { @Override public void run() { if(tvKids != null) tvKids.setText("关闭"); } });
-                        } else {
-                            ContentGuardInterceptor.enterKidsMode(mActivity, new Runnable() { @Override public void run() { if(tvKids != null) tvKids.setText("开启"); } });
-                        }
-                    }
-                });
-            }
-        } catch(Exception e){}
-        
-        // ── 全能看：卡密激活 ──
-        try {
-            View v = findViewById(R.id.llActivate);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        FastClickCheckUtil.check(view);
-                        String card = Hawk.get("card_auth_key", "");
-                        long expire = Hawk.get("card_auth_expire", 0L);
-                        if(!card.isEmpty() && expire > System.currentTimeMillis()) {
-                            int d = (int)((expire - System.currentTimeMillis())/86400000L);
-                            new android.app.AlertDialog.Builder(mActivity).setTitle("✅ 已激活").setMessage("卡密: " + card + "\n剩余: " + Math.max(1,d) + "天").setPositiveButton("确定", null).show();
-                            return;
-                        }
-                        final EditText et = new EditText(mActivity);
-                        et.setHint("请输入激活卡密");
-                        LinearLayout ll = new LinearLayout(mActivity);
-                        ll.setPadding(40,0,40,0); ll.addView(et);
-                        new android.app.AlertDialog.Builder(mActivity)
-                            .setTitle("🔑 卡密激活").setMessage("输入激活码解锁")
-                            .setView(ll)
-                            .setPositiveButton("激活", null)
-                            .setNegativeButton("取消", null)
-                            .show();
-                    }
-                });
-            }
-        } catch(Exception e){}
-        
-        // ── 全能看：自定义源管理 ──
-        try {
-            View v = findViewById(R.id.llSourceManager);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        FastClickCheckUtil.check(view);
-                        try { mActivity.startActivity(new Intent(mActivity, SourceManagerActivity.class)); }
-                        catch(Exception e) { Toast.makeText(mContext, "源管理暂不可用", Toast.LENGTH_SHORT).show(); }
-                    }
-                });
-            }
-        } catch(Exception e){}
-        
-        // ── 全能看：云盘/电台 ──
-        try {
-            View v = findViewById(R.id.llCloudDrive);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) { FastClickCheckUtil.check(view);
-                        new android.app.AlertDialog.Builder(mActivity).setTitle("☁️ 云盘/NAS配置")
-                            .setMessage("在JSON影视源中配置WebDAV地址即可挂载云盘。\n支持: 阿里云盘/夸克网盘/群晖NAS")
-                            .setPositiveButton("知道了", null).show(); } });
-            }
-        } catch(Exception e){}
-        try {
-            View v = findViewById(R.id.llMusicRadio);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) { FastClickCheckUtil.check(view);
-                        new android.app.AlertDialog.Builder(mActivity).setTitle("🎵 音乐电台")
-                            .setMessage("在JSON影视源中添加音乐站点即可收听。\n支持: M3U电台/B站音乐源")
-                            .setPositiveButton("知道了", null).show(); } });
-            }
-        } catch(Exception e){}
-
-
-        // ── 全能看：内容管理 ──
         try {
             View v11 = findViewById(R.id.tvAdultStatus);
             if (v11 != null) {
@@ -961,96 +871,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 FastClickCheckUtil.check(v);
                 Hawk.put(HawkConfig.FAST_SEARCH_MODE, !Hawk.get(HawkConfig.FAST_SEARCH_MODE, false));
                 tvFastSearchText.setText(Hawk.get(HawkConfig.FAST_SEARCH_MODE, false) ? "已开启" : "已关闭");
-
-        // ── 全能看：内容管理 ──
-        try { View v = findViewById(R.id.tvAdultStatus); if(v != null && mActivity != null) { ((TextView)v).setText(Hawk.get(HawkConfig.ADULT_CONTENT, false) ? "显示" : "隐藏"); } } catch(Exception e){}
-        try { View v = findViewById(R.id.llAdultManage); if(v != null && mActivity != null) { v.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View view) { FastClickCheckUtil.check(view); AdminPasswordDialog pwdDialog = new AdminPasswordDialog(mActivity, "管理员验证", false); pwdDialog.setOnPasswordVerifyListener(new Runnable() { @Override public void run() { boolean c = Hawk.get(HawkConfig.ADULT_CONTENT, false); Hawk.put(HawkConfig.ADULT_CONTENT, !c); TextView tv = findViewById(R.id.tvAdultStatus); if(tv != null) tv.setText(c ? "隐藏" : "显示"); Toast.makeText(mContext, c ? "已隐藏" : "已显示", Toast.LENGTH_SHORT).show(); } }); pwdDialog.show(); } }); } } catch(Exception e){}
-        try { View v = findViewById(R.id.llAdultChangePwd); if(v != null && mActivity != null) { v.setOnClickListener(new View.OnClickListener() { @Override public void onClick(View v2) { FastClickCheckUtil.check(v2); AdminPasswordDialog verify = new AdminPasswordDialog(mActivity, "身份验证", false); verify.setOnPasswordVerifyListener(new Runnable() { @Override public void run() { new AdminPasswordDialog(mActivity, "设置新密码", true).show(); } }); verify.show(); } }); } } catch(Exception e){}
-        
-        // ── 全能看：少儿模式 ──
-        try {
-            final TextView tvKids = findViewById(R.id.tvKidsStatus);
-            if(tvKids != null) tvKids.setText(Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false) ? "开启" : "关闭");
-            View v = findViewById(R.id.llKidsMode);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        FastClickCheckUtil.check(view);
-                        if(Hawk.get(HawkConfig.KIDS_MODE_ENABLED, false)) {
-                            ContentGuardInterceptor.exitKidsMode(mActivity, new Runnable() { @Override public void run() { if(tvKids != null) tvKids.setText("关闭"); } });
-                        } else {
-                            ContentGuardInterceptor.enterKidsMode(mActivity, new Runnable() { @Override public void run() { if(tvKids != null) tvKids.setText("开启"); } });
-                        }
-                    }
-                });
             }
-        } catch(Exception e){}
-        
-        // ── 全能看：卡密激活 ──
-        try {
-            View v = findViewById(R.id.llActivate);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        FastClickCheckUtil.check(view);
-                        String card = Hawk.get("card_auth_key", "");
-                        long expire = Hawk.get("card_auth_expire", 0L);
-                        if(!card.isEmpty() && expire > System.currentTimeMillis()) {
-                            int d = (int)((expire - System.currentTimeMillis())/86400000L);
-                            new android.app.AlertDialog.Builder(mActivity).setTitle("✅ 已激活").setMessage("卡密: " + card + "\n剩余: " + Math.max(1,d) + "天").setPositiveButton("确定", null).show();
-                            return;
-                        }
-                        final EditText et = new EditText(mActivity);
-                        et.setHint("请输入激活卡密");
-                        LinearLayout ll = new LinearLayout(mActivity);
-                        ll.setPadding(40,0,40,0); ll.addView(et);
-                        new android.app.AlertDialog.Builder(mActivity)
-                            .setTitle("🔑 卡密激活").setMessage("输入激活码解锁")
-                            .setView(ll)
-                            .setPositiveButton("激活", null)
-                            .setNegativeButton("取消", null)
-                            .show();
-                    }
-                });
-            }
-        } catch(Exception e){}
-        
-        // ── 全能看：自定义源管理 ──
-        try {
-            View v = findViewById(R.id.llSourceManager);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) {
-                        FastClickCheckUtil.check(view);
-                        try { mActivity.startActivity(new Intent(mActivity, SourceManagerActivity.class)); }
-                        catch(Exception e) { Toast.makeText(mContext, "源管理暂不可用", Toast.LENGTH_SHORT).show(); }
-                    }
-                });
-            }
-        } catch(Exception e){}
-        
-        // ── 全能看：云盘/电台 ──
-        try {
-            View v = findViewById(R.id.llCloudDrive);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) { FastClickCheckUtil.check(view);
-                        new android.app.AlertDialog.Builder(mActivity).setTitle("☁️ 云盘/NAS配置")
-                            .setMessage("在JSON影视源中配置WebDAV地址即可挂载云盘。\n支持: 阿里云盘/夸克网盘/群晖NAS")
-                            .setPositiveButton("知道了", null).show(); } });
-            }
-        } catch(Exception e){}
-        try {
-            View v = findViewById(R.id.llMusicRadio);
-            if(v != null && mActivity != null) {
-                v.setOnClickListener(new View.OnClickListener() {
-                    @Override public void onClick(View view) { FastClickCheckUtil.check(view);
-                        new android.app.AlertDialog.Builder(mActivity).setTitle("🎵 音乐电台")
-                            .setMessage("在JSON影视源中添加音乐站点即可收听。\n支持: M3U电台/B站音乐源")
-                            .setPositiveButton("知道了", null).show(); } });
-            }
-        } catch(Exception e){}
-
+        });
 
         // ── 全能看：内容管理 ──
         try {
@@ -1208,8 +1030,6 @@ public class ModelSettingFragment extends BaseLazyFragment {
             }
         } catch (Exception e) { /* 安全跳过 */ }
 
-            }
-        });
         // Select App Language ( English / Chinese ) -----------------
         findViewById(R.id.llLocale).setOnClickListener(new View.OnClickListener() {
             private final int chkLang = Hawk.get(HawkConfig.HOME_LOCALE, 0);
