@@ -1,34 +1,10 @@
 [
   {
-    "group": "经典街机",
+    "group": "HTML5 经典",
     "games": [
-      {"name": "超级玛丽", "url": "https://supermarioplay.com/", "type": "h5"},
-      {"name": "坦克大战", "url": "https://www.games361.com/game/play/271.html", "type": "h5"},
-      {"name": "俄罗斯方块", "url": "https://tetris.com/play-tetris", "type": "h5"},
-      {"name": "吃豆人", "url": "https://www.games361.com/game/play/2.html", "type": "h5"}
-    ]
-  },
-  {
-    "group": "益智休闲",
-    "games": [
-      {"name": "2048", "url": "https://play2048.co/", "type": "h5"},
-      {"name": "贪吃蛇", "url": "https://playsnake.org/", "type": "h5"},
-      {"name": "Flappy Bird", "url": "https://flappybird.io/", "type": "h5"},
-      {"name": "扫雷", "url": "https://minesweeper.online/", "type": "h5"}
-    ]
-  },
-  {
-    "group": "策略棋牌",
-    "games": [
-      {"name": "五子棋", "url": "https://www.gomoku.app/", "type": "h5"},
-      {"name": "数独", "url": "https://sudoku.com/", "type": "h5"},
-      {"name": "国际象棋", "url": "https://lichess.org/", "type": "h5"}
-    ]
-  },
-  {
-    "group": "本地游戏文件",
-    "games": [
-      {"name": "🕹 从存储选择游戏文件", "url": "file:///", "type": "local"}
+      { "name": "2048", "url": "https://play2048.co/", "type": "h5" },
+      { "name": "贪吃蛇", "url": "https://slither.io/", "type": "h5" },
+      { "name": "俄罗斯方块", "url": "https://tetris.com/play-tetris/", "type": "h5" }
     ]
   }
 ]

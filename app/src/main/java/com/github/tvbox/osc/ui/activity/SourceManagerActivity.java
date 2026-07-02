@@ -170,6 +170,16 @@ public class SourceManagerActivity extends BaseActivity {
 
     private void saveAndRefresh() {
         Hawk.put(KEY_SOURCES, sourceList);
+        // 同步直播源到 HawkConfig.LIVE_URL 供 ApiConfig 使用
+        String liveUrl = "";
+        for (SourceItem item : sourceList) {
+            if (item.type == 2 && !item.url.isEmpty() && liveUrl.isEmpty()) {
+                liveUrl = item.url;
+            }
+        }
+        if (!liveUrl.isEmpty()) {
+            Hawk.put(com.github.tvbox.osc.util.HawkConfig.LIVE_URL, liveUrl);
+        }
         filterSources(currentFilter);
         Toast.makeText(this, "已保存", Toast.LENGTH_SHORT).show();
     }

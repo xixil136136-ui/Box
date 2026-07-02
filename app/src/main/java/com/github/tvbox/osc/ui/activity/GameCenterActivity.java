@@ -3,6 +3,7 @@ package com.github.tvbox.osc.ui.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,9 +14,11 @@ import com.github.tvbox.osc.R;
 import com.github.tvbox.osc.base.BaseActivity;
 import com.github.tvbox.osc.bean.GameGroup;
 import com.github.tvbox.osc.bean.GameItem;
+import com.github.tvbox.osc.ui.activity.SourceManagerActivity.SourceItem;
 import com.github.tvbox.osc.util.FastClickCheckUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.orhanobut.hawk.Hawk;
 import com.owen.tvrecyclerview.widget.TvRecyclerView;
 import com.owen.tvrecyclerview.widget.V7LinearLayoutManager;
 
@@ -54,6 +57,7 @@ public class GameCenterActivity extends BaseActivity {
     }
 
     private void loadGameSources() {
+        // 1. Try assets/game_sources.json
         try {
             InputStream is = getAssets().open(DEFAULT_GAME_FILE);
             byte[] buffer = new byte[is.available()];
@@ -61,14 +65,32 @@ public class GameCenterActivity extends BaseActivity {
             is.close();
             String json = new String(buffer, "UTF-8");
             Type type = new TypeToken<List<GameGroup>>(){}.getType();
-            gameGroups = new Gson().fromJson(json, type);
-            if (gameGroups != null && !gameGroups.isEmpty()) {
-                setupGroupList();
-                setupGameList(0);
-                return;
+            List<GameGroup> assetGames = new Gson().fromJson(json, type);
+            if (assetGames != null && !assetGames.isEmpty()) {
+                gameGroups.clear();
+                gameGroups.addAll(assetGames);
             }
         } catch (Exception ignored) {}
-        Toast.makeText(mContext, "未找到游戏配置", Toast.LENGTH_SHORT).show();
+
+        // 2. Load type=3 custom sources from custom_sources_list and merge
+        try {
+            String KEY_SOURCES = "custom_sources_list";
+            List<SourceItem> sources = Hawk.get(KEY_SOURCES, new ArrayList<>());
+            for (SourceItem si : sources) {
+                if (si.type == 3 && !TextUtils.isEmpty(si.url)) {
+                    List<GameItem> games = new ArrayList<>();
+                    games.add(new GameItem(si.name, si.url, "h5"));
+                    gameGroups.add(new GameGroup("🎮 " + si.name, games));
+                }
+            }
+        } catch (Exception ignored) {}
+
+        if (gameGroups != null && !gameGroups.isEmpty()) {
+            setupGroupList();
+            setupGameList(0);
+            return;
+        }
+        Toast.makeText(mContext, "未找到游戏配置\n请先在「源管理」中添加游戏源", Toast.LENGTH_LONG).show();
     }
 
     private void setupGroupList() {

@@ -366,7 +366,7 @@ public class HomeActivity extends BaseActivity {
                     FastClickCheckUtil.check(view);
                     String savedCard = Hawk.get("card_auth_key", "");
                     long expire = Hawk.get("card_auth_expire", 0L);
-                    if (!savedCard.isEmpty() && expire > System.currentTimeMillis()) {
+                    if (!savedCard.isEmpty() && (expire == 0 || expire > System.currentTimeMillis())) {
                         int days = (int)((expire - System.currentTimeMillis()) / 86400000L);
                         new AlertDialog.Builder(HomeActivity.this)
                             .setTitle("✅ 已激活").setMessage("卡密: " + savedCard + "\n剩余: " + Math.max(1, days) + " 天")
